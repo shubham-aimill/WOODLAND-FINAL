@@ -1,0 +1,319 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Woodland Official Brand Theme - Forest Green */
+    --background: 120 10% 98%;
+    --foreground: 132 40% 15%;
+
+    --card: 120 8% 96%;
+    --card-foreground: 132 40% 15%;
+
+    --popover: 120 10% 98%;
+    --popover-foreground: 132 40% 15%;
+
+    /* Woodland Primary - Forest Green #2A6334 */
+    --primary: 132 40% 28%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Light Green Secondary */
+    --secondary: 120 15% 92%;
+    --secondary-foreground: 132 40% 15%;
+
+    --muted: 120 10% 90%;
+    --muted-foreground: 132 15% 40%;
+
+    --accent: 132 40% 28%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Status Colors */
+    --destructive: 6 78% 57%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 145 50% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 36 90% 51%;
+    --warning-foreground: 132 40% 15%;
+
+    --border: 120 10% 85%;
+    --input: 120 10% 85%;
+    --ring: 132 40% 28%;
+
+    --radius: 0.75rem;
+
+    /* Chart Colors - Woodland Earth Palette */
+    --chart-1: 132 40% 28%;
+    --chart-2: 145 40% 45%;
+    --chart-3: 36 70% 50%;
+    --chart-4: 30 50% 45%;
+    --chart-5: 200 60% 45%;
+
+    /* Glass Effect */
+    --glass-bg: 0 0% 100% / 0.85;
+    --glass-border: 132 40% 28% / 0.1;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+    --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+
+    /* Sidebar */
+    --sidebar-background: 120 8% 96%;
+    --sidebar-foreground: 132 40% 15%;
+    --sidebar-primary: 132 40% 28%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 132 40% 95%;
+    --sidebar-accent-foreground: 132 40% 15%;
+    --sidebar-border: 120 10% 85%;
+    --sidebar-ring: 132 40% 28%;
+  }
+
+  .dark {
+    --background: 150 15% 8%;
+    --foreground: 120 15% 95%;
+
+    --card: 150 15% 12%;
+    --card-foreground: 120 15% 95%;
+
+    --popover: 150 15% 10%;
+    --popover-foreground: 120 15% 95%;
+
+    --primary: 132 45% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 150 12% 18%;
+    --secondary-foreground: 120 15% 95%;
+
+    --muted: 150 12% 18%;
+    --muted-foreground: 120 10% 55%;
+
+    --accent: 132 45% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 6 78% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 145 50% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 36 90% 45%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 150 12% 22%;
+    --input: 150 12% 22%;
+    --ring: 132 45% 40%;
+
+    --sidebar-background: 150 15% 10%;
+    --sidebar-foreground: 120 15% 95%;
+    --sidebar-primary: 132 45% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 150 12% 16%;
+    --sidebar-accent-foreground: 120 15% 95%;
+    --sidebar-border: 150 12% 22%;
+    --sidebar-ring: 132 45% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight text-foreground;
+  }
+}
+
+@layer components {
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-lg border border-white/30;
+  }
+
+  /* Card hover effect */
+  .card-hover {
+    @apply transition-all duration-200 ease-out;
+  }
+  
+  .card-hover:hover {
+    @apply -translate-y-1 shadow-hover;
+  }
+
+  /* Butter yellow accent border on hover */
+  .accent-border-hover {
+    @apply border-l-4 border-l-transparent transition-all duration-200;
+  }
+  
+  .accent-border-hover:hover {
+    @apply border-l-primary;
+  }
+
+  /* KPI Card styles */
+  .kpi-card {
+    @apply bg-card rounded-xl p-5 shadow-sm transition-all duration-200 border border-transparent;
+  }
+  
+  .kpi-card:hover {
+    @apply -translate-y-1 shadow-lg border-primary/20 cursor-pointer;
+  }
+
+  /* Filter chip styles */
+  .filter-chip {
+    @apply bg-white rounded-lg px-4 py-2 border border-border transition-all duration-200 cursor-pointer;
+  }
+  
+  .filter-chip:hover {
+    @apply border-primary shadow-sm;
+  }
+  
+  .filter-chip.active {
+    @apply bg-primary/10 border-primary;
+  }
+
+  /* Data table row hover */
+  .table-row-hover {
+    @apply transition-colors duration-150;
+  }
+  
+  .table-row-hover:hover {
+    @apply bg-primary/5;
+  }
+
+  /* Status badges */
+  .status-success {
+    @apply bg-success/10 text-success px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .status-warning {
+    @apply bg-warning/10 text-warning px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .status-error {
+    @apply bg-destructive/10 text-destructive px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  /* Shimmer loading effect */
+  .shimmer {
+    @apply relative overflow-hidden;
+  }
+  
+  .shimmer::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(132 40% 28% / 0.1),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Chart container */
+  .chart-container {
+    @apply bg-card rounded-xl p-6 shadow-sm border border-border/50;
+  }
+
+  /* Navigation active state */
+  .nav-active {
+    @apply relative;
+  }
+  
+  .nav-active::after {
+    content: '';
+    @apply absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full;
+  }
+}
+
+@layer utilities {
+  /* Custom shadow utilities */
+  .shadow-hover {
+    box-shadow: var(--shadow-hover);
+  }
+
+  /* Scrollbar styling */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted)) transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted));
+    border-radius: 3px;
+  }
+
+  /* Fade in animation */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Slide in from right */
+  .animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Pulse glow for live indicators */
+  .pulse-glow {
+    animation: pulseGlow 2s infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 0 0 0 0 hsl(145 50% 53% / 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 8px hsl(145 50% 53% / 0);
+    }
+  }
+}
