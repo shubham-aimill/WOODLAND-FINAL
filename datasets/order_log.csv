@@ -1,0 +1,23 @@
+date,sku_id,store_id,sales_channel,actual_sales_units
+2024-01-03,WL-SKU-001,Store_01,Offline Retail,30.0
+2024-01-03,WL-SKU-001,Store_01,Offline Retail,30.0
+2024-01-03,WL-SKU-001,Store_01,Offline Retail,30.0
+2024-01-03,WL-SKU-001,Store_01,Offline Retail,30.0
+2024-01-03,WL-SKU-001,Store_01,Offline Retail,30.0
+2024-01-03,WL-SKU-001,Store_01,Offline Retail,30.0
+2024-01-03,WL-SKU-001,Store_01,Offline Retail,30.0
+2024-01-03,WL-SKU-001,Store_01,Offline Retail,30.0
+2024-01-03,WL-SKU-001,Store_01,Offline Retail,30.0
+2024-01-03,WL-SKU-001,Store_01,Offline Retail,30.0
+2024-01-10,WL-SKU-002,Store_03,Offline Retail,25.0
+2024-02-01,WL-SKU-010,Store_05,Online,40.0
+2024-02-01,WL-SKU-010,Store_05,Online,40.0
+2024-03-10,WL-SKU-020,Store_12,Online,15.0
+2024-04-01,WL-SKU-003,Store_07,Offline Retail,5.0
+2024-04-01,WL-SKU-003,Store_07,Offline Retail,5.0
+2024-02-10,WL-SKU-015,Store_08,Online,60.0
+2024-02-10,WL-SKU-015,Store_08,Online,60.0
+2024-02-10,WL-SKU-015,Store_08,Online,60.0
+2024-02-10,WL-SKU-015,Store_08,Online,60.0
+2024-02-10,WL-SKU-015,Store_08,Online,60.0
+2024-02-10,WL-SKU-015,Store_08,Online,60.0

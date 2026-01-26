@@ -1,0 +1,213 @@
+{
+  "global_rules": {
+    "sql_dialect": "sqlite",
+    "case_insensitive_matching": "SQLite does not support ILIKE. Always use LOWER(column) LIKE '%value%'",
+    "forecast_rule": "Forecasted date is not stored directly. It must be computed as date + forecast_horizon (in days).",
+    "forecast_sql_expression_sqlite": "date(date, '+' || CAST(REPLACE(forecast_horizon, 'day', '') AS INTEGER) || ' days')",
+    "critical_warnings": [
+      "NEVER filter forecast tables directly using date",
+      "ALWAYS compute forecast_date before applying BETWEEN, GROUP BY, or ORDER BY",
+      "Use case-insensitive matching for store_id unless an exact ID is provided"
+    ]
+  },
+  "tables": {
+    "sales_daily_forecast": {
+      "description": "Daily SKU-level sales forecasts at store level. Each row represents forecasted sales units for a store at a future date derived from forecast_horizon.",
+      "forecast_semantics": {
+        "definition": "Forecasted date must be computed as date + forecast_horizon (days).",
+        "sql_expression_sqlite": "date(date, '+' || CAST(REPLACE(forecast_horizon, 'day', '') AS INTEGER) || ' days')"
+      },
+      "columns": {
+        "date": {
+          "description": "Date on which the forecast was generated.",
+          "type": "date",
+          "usage_rule": "Used only to compute forecast_date"
+        },
+        "sku_id": {
+          "description": "Unique SKU or product identifier.",
+          "type": "string",
+          "semantic_role": "product_identifier",
+          "matching_rule": "Use exact match unless user specifies otherwise"
+        },
+        "store_id": {
+          "description": "Unique store identifier.",
+          "type": "string",
+          "semantic_role": "store_identifier",
+          "matching_rule": "Use case-insensitive partial match unless exact ID is provided",
+          "sql_rule_sqlite": "LOWER(store_id) LIKE '%value%'"
+        },
+        "forecast_horizon": {
+          "description": "Forecast horizon indicating how many days ahead the forecast applies (e.g., '7day').",
+          "type": "string",
+          "usage_rule": "Must be converted to integer days to compute forecast_date"
+        },
+        "forecast_units": {
+          "description": "Forecasted sales units for the SKU at the store on the computed forecast_date.",
+          "type": "integer",
+          "aggregation_rule": "Can be summed or averaged across stores or SKUs"
+        }
+      }
+    },
+    "order_log": {
+  "description": "Historical actual sales data at SKU-store-day level. Insert-only table.",
+  "writable": true,
+  "write_rules": {
+    "allowed_operations": ["INSERT"],
+    "constraints": [
+      "Only INSERT is allowed",
+      "No UPDATE or DELETE",
+      "Append-only table"
+    ]
+  },
+      "columns": {
+        "date": {
+          "description": "Actual sales date.",
+          "type": "date",
+          "semantic_role": "actual_sales_date"
+        },
+        "sku_id": {
+          "description": "SKU or product identifier for the sold item.",
+          "type": "string",
+          "semantic_role": "product_identifier",
+          "matching_rule": "Use exact match unless user specifies otherwise"
+        },
+        "store_id": {
+          "description": "Identifier of the store where the sale occurred.",
+          "type": "string",
+          "semantic_role": "store_identifier",
+          "matching_rule": "Use case-insensitive partial match unless exact ID is provided",
+          "sql_rule_sqlite": "LOWER(store_id) LIKE '%value%'"
+        },
+        "sales_channel": {
+          "description": "Sales channel through which the sale occurred (e.g., online, offline).",
+          "type": "string",
+          "aggregation_rule": "Can be grouped for channel-level analysis"
+        },
+        "actual_sales_units": {
+          "description": "Actual number of units sold.",
+          "type": "integer",
+          "aggregation_rule": "SUM"
+        }
+      }
+    },
+
+    "raw_material_inventory": {
+      "description": "Daily raw material inventory levels and movements. Each row represents inventory state for a raw material on a specific date.",
+      "writable": false,
+      "columns": {
+        "date": {
+          "description": "Inventory record date.",
+          "type": "date",
+          "semantic_role": "inventory_date"
+        },
+        "raw_material": {
+          "description": "Name or identifier of the raw material.",
+          "type": "string",
+          "semantic_role": "raw_material_identifier",
+          "matching_rule": "Use case-insensitive partial match",
+          "sql_rule_sqlite": "LOWER(raw_material) LIKE '%value%'"
+        },
+        "opening_inventory": {
+          "description": "Inventory units available at the start of the day.",
+          "type": "integer",
+          "aggregation_rule": "Do NOT sum across days"
+        },
+        "inflow_quantity": {
+          "description": "Quantity of raw material added to inventory on the day.",
+          "type": "integer",
+          "aggregation_rule": "SUM"
+        },
+        "consumed_quantity": {
+          "description": "Quantity of raw material consumed during the day.",
+          "type": "integer",
+          "aggregation_rule": "SUM"
+        },
+        "closing_inventory": {
+          "description": "Inventory units remaining at the end of the day.",
+          "type": "integer",
+          "aggregation_rule": "Do NOT sum across days"
+        },
+        "safety_stock": {
+          "description": "Minimum required inventory level to avoid stockout.",
+          "type": "integer",
+          "semantic_role": "safety_threshold"
+        }
+      }
+    },
+
+    "sku_daily_sales": {
+        "description": "Daily SKU-level actual sales data at store level, including promotion indicators.",
+        "writable": false,
+        "columns": {
+          "date": {
+            "description": "Sales transaction date.",
+            "type": "date",
+            "semantic_role": "sales_date"
+          },
+          "sku_id": {
+            "description": "Unique SKU or product identifier.",
+            "type": "string",
+            "semantic_role": "product_identifier",
+            "matching_rule": "Use exact match unless user specifies otherwise"
+          },
+          "store_id": {
+            "description": "Identifier of the store where the sale occurred.",
+            "type": "string",
+            "semantic_role": "store_identifier",
+            "matching_rule": "Use case-insensitive partial match unless exact ID is provided",
+            "sql_rule_sqlite": "LOWER(store_id) LIKE '%value%'"
+          },
+          "sales_channel": {
+            "description": "Channel through which the sale occurred (e.g., E-Commerce, Offline Retail).",
+            "type": "string",
+            "aggregation_rule": "Can be grouped for channel analysis"
+          },
+          "actual_sales_units": {
+            "description": "Actual number of units sold.",
+            "type": "integer",
+            "aggregation_rule": "SUM"
+          },
+          "promotion_flag": {
+            "description": "Indicates whether the SKU was under promotion on the given date (1 = yes, 0 = no).",
+            "type": "integer",
+            "semantic_role": "promotion_indicator",
+            "allowed_values": [
+              0,
+              1
+            ]
+          }
+        }
+      },
+      "raw_material_log": {
+      "description": "User-entered raw material inventory records.",
+      "writable": true,
+      "allowed_operations": ["INSERT"],
+      "columns": {
+        "date": {
+          "type": "date"
+        },
+        "raw_material": {
+          "type": "string",
+          "matching_rule": "case-insensitive",
+          "sql_rule_sqlite": "LOWER(raw_material) LIKE '%value%'"
+        },
+        "opening_inventory": {
+          "type": "integer"
+        },
+        "inflow_quantity": {
+          "type": "integer"
+        },
+        "consumed_quantity": {
+          "type": "integer"
+        },
+        "closing_inventory": {
+          "type": "integer"
+        },
+        "safety_stock": {
+          "type": "integer"
+        }
+      }
+    }
+
+  }
+}

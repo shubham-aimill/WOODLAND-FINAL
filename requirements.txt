@@ -1,0 +1,5 @@
+statsmodels
+python-dateutil
+flask
+flask-cors
+pytz
