@@ -9,3 +9,4 @@ matplotlib
 langchain
 langchain-openai
 langchain-google-genai
+sendgrid
