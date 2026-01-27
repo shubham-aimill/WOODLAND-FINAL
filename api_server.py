@@ -1862,7 +1862,7 @@ def health_check():
 
 
 # =========================================================
-if _name_ == "_main_":
+if __name__ == "_main_":
     port = int(os.environ.get("PORT", 5051))
 
     app.run(
