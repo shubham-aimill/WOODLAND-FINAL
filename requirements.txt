@@ -3,3 +3,4 @@ python-dateutil
 flask
 flask-cors
 pytz
+python-dotenv
