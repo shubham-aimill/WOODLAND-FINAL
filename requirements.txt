@@ -4,3 +4,8 @@ flask
 flask-cors
 pytz
 python-dotenv
+pandas
+matplotlib
+langchain
+langchain-openai
+langchain-google-genai
