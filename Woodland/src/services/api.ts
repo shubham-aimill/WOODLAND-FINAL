@@ -264,8 +264,8 @@ export interface RawMaterialRiskRow {
 
 import { FilterState } from "@/contexts/FilterContext";
 
-// FORCE Localhost for Development
-const API_BASE_URL = "/api";
+// Backend API URL - Render Deployment
+const API_BASE_URL = "https://woodland-backend.onrender.com/api";
 
 const CONSUMPTION_API_URL = API_BASE_URL;
 const SALES_API_URL = API_BASE_URL;
@@ -278,7 +278,7 @@ async function apiRequest<T>(
   const base = baseUrl || CONSUMPTION_API_URL;
   // Handle slash logic safely
   const url = `${base}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
-  
+
   const config: RequestInit = {
     headers: {
       "Content-Type": "application/json",
@@ -286,7 +286,7 @@ async function apiRequest<T>(
     },
     ...options,
   };
-  
+
   const response = await fetch(url, config);
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
@@ -313,7 +313,7 @@ function filtersToParams(filters: FilterState): URLSearchParams {
 
   params.append("aggregation", filters.aggregation);
   params.append("view", filters.view);
-  
+
   if (filters.rollingWindow) params.append("rollingWindow", filters.rollingWindow);
 
   return params;
