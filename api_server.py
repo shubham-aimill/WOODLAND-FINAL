@@ -402,6 +402,8 @@ def consumption_dashboard():
         # CALCULATE PRODUCT-SPECIFIC DEMAND (if product filter is selected)
         # ===============================
         # If a product is selected, calculate demand from product_bom_expanded instead of aggregated raw_material_demand
+        product_raw_materials = None  # Track raw materials for the selected product
+        
         if product and product != "all" and not df_bom_expanded.empty:
             # Filter BOM expanded by product
             df_bom_product = df_bom_expanded[df_bom_expanded["product_id"] == product].copy()
@@ -426,19 +428,24 @@ def consumption_dashboard():
                 if "date" in df_demand_from_product.columns:
                     df_demand_from_product["date"] = pd.to_datetime(df_demand_from_product["date"], errors="coerce")
 
+                # Track the raw materials available for this product
+                product_raw_materials = set(df_bom_product["raw_material"].unique())
+
                 # Replace df_demand with product-specific demand
                 df_demand = df_demand_from_product
 
         # Apply raw material filter - combine explicit selection with product-derived materials
         if raw_material and raw_material != "all":
             # If explicit raw material is selected, check if it's compatible with product filter
-            if final_raw_materials is not None and len(final_raw_materials) > 0:
-                # Both product and raw material selected - intersect them
-                if raw_material in final_raw_materials:
-                    # Raw material is used by the selected product - apply filter
+            available_materials = product_raw_materials if product_raw_materials else final_raw_materials
+            
+            if available_materials is not None and len(available_materials) > 0:
+                # Check if the selected raw material is available
+                if raw_material in available_materials:
+                    # Raw material is available - apply filter
                     filter_materials = [raw_material]
                 else:
-                    # Raw material is NOT used by selected product - show empty (no data)
+                    # Raw material is NOT available - show empty (no data)
                     filter_materials = []
             else:
                 # No product filter, just raw material filter
