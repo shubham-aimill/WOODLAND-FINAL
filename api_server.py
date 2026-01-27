@@ -48,7 +48,7 @@ def apply_date_range(df, date_col, date_range):
     # Handle new "next-X" format for forecasts
     if date_range in ["next-7", "next-30"]:
         return df  # Don't filter forecast data here, handled separately
-    
+
     # Legacy support for "last-X" format
     if date_range == "last-7":
         start = latest - timedelta(days=7)
@@ -97,6 +97,12 @@ def json_safe(value):
     if isinstance(value, (pd.Timestamp,)):
         return value.isoformat()
     return value
+
+def safe_to_int(series):
+    """Safely convert a pandas Series to int, handling NaN and non-numeric values."""
+    if series is None or (isinstance(series, pd.Series) and series.empty):
+        return series
+    return series.fillna(0).astype(float).round().astype('Int64')  # Int64 handles NaN better than int64
 
 def load_csv(filename):
     path = os.path.join(DATA_DIR, filename)
@@ -196,8 +202,8 @@ def consumption_dashboard():
         category = request.args.get("category")
         date_range = request.args.get("dateRange", "next-30")
         aggregation = request.args.get("aggregation", "daily")
-        
-        
+
+
         # Determine forecast horizon from new filter format
         forecast_days = get_forecast_horizon_days(date_range)
         forecast_horizon = f"{forecast_days}day"
@@ -219,11 +225,11 @@ def consumption_dashboard():
         # ===============================
         if not df_demand.empty and "forecast_horizon" in df_demand.columns:
             df_demand = df_demand[df_demand["forecast_horizon"] == forecast_horizon]
-        
+
         # Filter BOM expanded by forecast horizon (needed for product-specific demand calculation)
         if not df_bom_expanded.empty and "forecast_horizon" in df_bom_expanded.columns:
             df_bom_expanded = df_bom_expanded[df_bom_expanded["forecast_horizon"] == forecast_horizon].copy()
-        
+
         if not df_forecast.empty and "forecast_horizon" in df_forecast.columns:
             df_forecast = df_forecast[df_forecast["forecast_horizon"] == forecast_horizon]
 
@@ -238,7 +244,7 @@ def consumption_dashboard():
             df_inventory["date"] = pd.to_datetime(df_inventory["date"], errors="coerce")
         if not df_sales.empty:
             df_sales["date"] = pd.to_datetime(df_sales["date"], errors="coerce")
-        
+
         # ===============================
         # DEFINE HISTORICAL PERIOD (Dynamic based on filter)
         # ===============================
@@ -251,16 +257,16 @@ def consumption_dashboard():
         # ===============================
         channel_store_raw_materials = None
         channel_weight = 1.0  # Default: no scaling
-        
+
         # Calculate channel contribution weight if channel filter is applied
         if channel and channel != "all" and not df_sales.empty:
             # Calculate total sales by channel
             total_all_channels = df_sales["actual_sales_units"].sum()
             channel_sales = df_sales[df_sales["sales_channel"] == channel]["actual_sales_units"].sum()
-            
+
             if total_all_channels > 0:
                 channel_weight = channel_sales / total_all_channels
-            
+
             # Filter sales data by channel
             df_sales = df_sales[df_sales["sales_channel"].astype(str) == str(channel)]
 
@@ -274,11 +280,11 @@ def consumption_dashboard():
             if not df_forecast.empty and "forecast_units" in df_forecast.columns:
                 df_forecast = df_forecast.copy()
                 df_forecast["forecast_units"] = (df_forecast["forecast_units"] * channel_weight).round().astype(int)
-            
+
             if not df_demand.empty and "material_demand_units" in df_demand.columns:
                 df_demand = df_demand.copy()
                 df_demand["material_demand_units"] = (df_demand["material_demand_units"] * channel_weight).round().astype(int)
-            
+
             # Scale inventory consumption and quantities by channel weight
             if not df_inventory.empty:
                 df_inventory = df_inventory.copy()
@@ -292,7 +298,7 @@ def consumption_dashboard():
                     df_inventory["inflow_quantity"] = (df_inventory["inflow_quantity"] * channel_weight).round().astype(int)
                 if "safety_stock" in df_inventory.columns:
                     df_inventory["safety_stock"] = (df_inventory["safety_stock"] * channel_weight).round().astype(int)
-            
+
             # Also scale the full inventory for latest calculations
             if not df_inventory_full.empty:
                 df_inventory_full = df_inventory_full.copy()
@@ -302,7 +308,7 @@ def consumption_dashboard():
                     df_inventory_full["closing_inventory"] = (df_inventory_full["closing_inventory"] * channel_weight).round().astype(int)
                 if "safety_stock" in df_inventory_full.columns:
                     df_inventory_full["safety_stock"] = (df_inventory_full["safety_stock"] * channel_weight).round().astype(int)
-            
+
             # Scale reconciliation data
             if not df_reconcile.empty:
                 df_reconcile = df_reconcile.copy()
@@ -313,12 +319,12 @@ def consumption_dashboard():
         if not df_sales.empty and "sku_id" in df_sales.columns:
             valid_skus_from_sales = df_sales["sku_id"].unique()
             df_forecast = df_forecast[df_forecast["sku_id"].isin(valid_skus_from_sales)]
-            
+
             if (channel and channel != "all") or (store and store != "all"):
                 products_from_channel_store = df_sku_master[
                     df_sku_master["sku_id"].isin(valid_skus_from_sales)
                 ]["product_id"].unique()
-                
+
                 if len(products_from_channel_store) > 0 and not df_bom.empty:
                     channel_store_raw_materials = df_bom[
                         df_bom["product_id"].isin(products_from_channel_store)
@@ -330,7 +336,7 @@ def consumption_dashboard():
         sku_raw_materials = None
         if sku and sku != "all":
             df_forecast = df_forecast[df_forecast["sku_id"] == sku]
-            
+
             if not df_sku_master.empty and not df_bom.empty:
                 products_for_sku = df_sku_master[
                     df_sku_master["sku_id"] == sku
@@ -344,13 +350,13 @@ def consumption_dashboard():
         # PRODUCT / CATEGORY FILTER
         # ===============================
         valid_raw_materials = None
-        
+
         if product and product != "all":
             valid_skus = df_sku_master[
                 df_sku_master["product_id"] == product
             ]["sku_id"]
             df_forecast = df_forecast[df_forecast["sku_id"].isin(valid_skus)]
-            
+
             if not df_bom.empty and "product_id" in df_bom.columns:
                 valid_raw_materials = df_bom[df_bom["product_id"] == product]["raw_material"].unique()
 
@@ -359,7 +365,7 @@ def consumption_dashboard():
                 df_sku_master["category"] == category
             ]["sku_id"]
             df_forecast = df_forecast[df_forecast["sku_id"].isin(valid_skus)]
-            
+
             if not df_bom.empty and "product_id" in df_bom.columns:
                 products_in_category = df_sku_master[
                     df_sku_master["category"] == category
@@ -376,22 +382,22 @@ def consumption_dashboard():
         # RAW MATERIAL FILTER
         # ===============================
         final_raw_materials = None
-        
+
         if channel_store_raw_materials is not None and len(channel_store_raw_materials) > 0:
             final_raw_materials = set(channel_store_raw_materials)
-        
+
         if sku_raw_materials is not None and len(sku_raw_materials) > 0:
             if final_raw_materials is not None:
                 final_raw_materials = final_raw_materials & set(sku_raw_materials)
             else:
                 final_raw_materials = set(sku_raw_materials)
-        
+
         if valid_raw_materials is not None and len(valid_raw_materials) > 0:
             if final_raw_materials is not None:
                 final_raw_materials = final_raw_materials & set(valid_raw_materials)
             else:
                 final_raw_materials = set(valid_raw_materials)
-        
+
         # ===============================
         # CALCULATE PRODUCT-SPECIFIC DEMAND (if product filter is selected)
         # ===============================
@@ -399,26 +405,30 @@ def consumption_dashboard():
         if product and product != "all" and not df_bom_expanded.empty:
             # Filter BOM expanded by product
             df_bom_product = df_bom_expanded[df_bom_expanded["product_id"] == product].copy()
-            
+
             if not df_bom_product.empty:
                 # Calculate material_demand_units = product_units * consumption_per_unit
+                # Fill NaN values with 0 to avoid conversion errors
+                df_bom_product["product_units"] = df_bom_product["product_units"].fillna(0)
+                df_bom_product["consumption_per_unit"] = df_bom_product["consumption_per_unit"].fillna(0)
+
                 df_bom_product["material_demand_units"] = (
                     df_bom_product["product_units"] * df_bom_product["consumption_per_unit"]
                 ).round().astype(int)
-                
+
                 # Aggregate by date and raw_material to match df_demand structure
                 df_demand_from_product = df_bom_product.groupby(
                     ["date", "raw_material", "material_type", "forecast_horizon"],
                     as_index=False
                 )["material_demand_units"].sum()
-                
+
                 # Ensure date column is datetime (matching df_demand format)
                 if "date" in df_demand_from_product.columns:
                     df_demand_from_product["date"] = pd.to_datetime(df_demand_from_product["date"], errors="coerce")
-                
+
                 # Replace df_demand with product-specific demand
                 df_demand = df_demand_from_product
-        
+
         # Apply raw material filter - combine explicit selection with product-derived materials
         if raw_material and raw_material != "all":
             # If explicit raw material is selected, check if it's compatible with product filter
@@ -433,7 +443,7 @@ def consumption_dashboard():
             else:
                 # No product filter, just raw material filter
                 filter_materials = [raw_material]
-            
+
             df_demand = df_demand[df_demand["raw_material"].isin(filter_materials)]
             df_inventory = df_inventory[df_inventory["raw_material"].isin(filter_materials)]
             df_inventory_full = df_inventory_full[df_inventory_full["raw_material"].isin(filter_materials)]
@@ -450,12 +460,12 @@ def consumption_dashboard():
         # CREATE HISTORICAL DATA SUBSETS (After ALL filters applied)
         # ===============================
         df_inventory_historical = df_inventory[
-            (df_inventory["date"] >= historical_start) & 
+            (df_inventory["date"] >= historical_start) &
             (df_inventory["date"] <= FORECAST_CUTOFF_DATE)
         ].copy() if not df_inventory.empty else pd.DataFrame()
-        
+
         df_sales_historical = df_sales[
-            (df_sales["date"] >= historical_start) & 
+            (df_sales["date"] >= historical_start) &
             (df_sales["date"] <= FORECAST_CUTOFF_DATE)
         ].copy() if not df_sales.empty else pd.DataFrame()
 
@@ -465,17 +475,17 @@ def consumption_dashboard():
         # Total Forecasted Raw Material Demand = Sum of material_demand_units (future forecast)
         # If weekly aggregation, sum all forecast days (already daily, so sum is correct)
         total_forecasted_demand = json_safe(safe_sum(df_demand, "material_demand_units"))
-        
+
         # Trailing N-Day Consumption = Sum of consumed_quantity from historical period
         # If a product is selected, allocate consumption proportionally based on product's demand share
         if product and product != "all" and not df_inventory_historical.empty and not df_bom_expanded.empty:
             # Calculate product-specific consumption by allocating raw material consumption
             # based on the product's share of total demand for each raw material
             trailing_consumption = 0
-            
+
             # Get total consumption by raw material from historical inventory
             consumption_by_rm = df_inventory_historical.groupby("raw_material")["consumed_quantity"].sum()
-            
+
             # Calculate product's demand share for each raw material
             df_bom_product_historical = df_bom_expanded[df_bom_expanded["product_id"] == product].copy()
             if not df_bom_product_historical.empty:
@@ -483,23 +493,23 @@ def consumption_dashboard():
                 df_bom_product_historical["material_demand_units"] = (
                     df_bom_product_historical["product_units"] * df_bom_product_historical["consumption_per_unit"]
                 )
-                
+
                 # Get product's total demand by raw material (across all dates in historical period)
                 product_demand_by_rm = df_bom_product_historical.groupby("raw_material")["material_demand_units"].sum()
-                
+
                 # Get total demand by raw material (all products) for allocation
                 total_demand_by_rm = df_bom_expanded.copy()
                 total_demand_by_rm["material_demand_units"] = (
                     total_demand_by_rm["product_units"] * total_demand_by_rm["consumption_per_unit"]
                 )
                 total_demand_by_rm = total_demand_by_rm.groupby("raw_material")["material_demand_units"].sum()
-                
+
                 # Allocate consumption proportionally: product_consumption = total_consumption * (product_demand / total_demand)
                 for raw_mat in consumption_by_rm.index:
                     total_consumption = consumption_by_rm[raw_mat]
                     product_demand = product_demand_by_rm.get(raw_mat, 0)
                     total_demand = total_demand_by_rm.get(raw_mat, 0)
-                    
+
                     if total_demand > 0:
                         # Allocate consumption based on demand share
                         allocated_consumption = total_consumption * (product_demand / total_demand)
@@ -507,7 +517,7 @@ def consumption_dashboard():
                     elif product_demand > 0:
                         # Product uses this material but no total demand (edge case)
                         trailing_consumption += 0
-            
+
             trailing_consumption = json_safe(trailing_consumption)
         else:
             # No product filter - use total consumption
@@ -524,7 +534,7 @@ def consumption_dashboard():
 
         # Get forecasted demand by raw material for the period
         forecast_by_rm = df_demand.groupby("raw_material")["material_demand_units"].sum() if not df_demand.empty else pd.Series()
-        
+
         # Calculate expected inflow based on FULL historical average (not filtered period)
         # This gives a more accurate representation of expected supply
         if not df_inventory_full.empty and "inflow_quantity" in df_inventory_full.columns:
@@ -538,7 +548,7 @@ def consumption_dashboard():
             # Map forecasted demand and expected inflow
             df_latest_inventory["forecasted_demand"] = df_latest_inventory["raw_material"].map(forecast_by_rm).fillna(0)
             df_latest_inventory["expected_inflow"] = df_latest_inventory["raw_material"].map(expected_inflow_by_rm).fillna(0)
-            
+
             # If a product is selected, allocate inventory values proportionally based on demand share
             if product and product != "all" and not df_bom_expanded.empty:
                 # Calculate product's demand share for each raw material
@@ -548,20 +558,20 @@ def consumption_dashboard():
                         df_bom_product_all["product_units"] * df_bom_product_all["consumption_per_unit"]
                     )
                     product_demand_by_rm = df_bom_product_all.groupby("raw_material")["material_demand_units"].sum()
-                    
+
                     # Get total demand by raw material (all products) for allocation
                     total_demand_by_rm_all = df_bom_expanded.copy()
                     total_demand_by_rm_all["material_demand_units"] = (
                         total_demand_by_rm_all["product_units"] * total_demand_by_rm_all["consumption_per_unit"]
                     )
                     total_demand_by_rm_all = total_demand_by_rm_all.groupby("raw_material")["material_demand_units"].sum()
-                    
+
                     # Allocate inventory values proportionally based on product's demand share
                     for idx, row in df_latest_inventory.iterrows():
                         raw_mat = row["raw_material"]
                         product_demand = product_demand_by_rm.get(raw_mat, 0)
                         total_demand = total_demand_by_rm_all.get(raw_mat, 0)
-                        
+
                         if total_demand > 0:
                             allocation_factor = product_demand / total_demand
                             df_latest_inventory.at[idx, "closing_inventory"] = row["closing_inventory"] * allocation_factor
@@ -571,16 +581,16 @@ def consumption_dashboard():
                             df_latest_inventory.at[idx, "closing_inventory"] = 0
                             df_latest_inventory.at[idx, "safety_stock"] = 0
                             df_latest_inventory.at[idx, "expected_inflow"] = 0
-            
+
             # Calculate projected inventory: Current + Inflow - Total Forecasted Demand
             # NOTE: Uses TOTAL forecasted demand (sum of all forecast days), not cumulative
             # This projects inventory at the END of the forecast period
             df_latest_inventory["projected_inventory"] = (
-                df_latest_inventory["closing_inventory"] 
+                df_latest_inventory["closing_inventory"]
                 + df_latest_inventory["expected_inflow"]
                 - df_latest_inventory["forecasted_demand"]  # Total demand for entire period
             )
-            
+
             # Debug: Log calculation details for verification
             if forecast_days in [7, 30]:
                 sample_rm = df_latest_inventory.iloc[0]["raw_material"] if not df_latest_inventory.empty else None
@@ -591,7 +601,7 @@ def consumption_dashboard():
                     print(f"  Expected Inflow: {sample_row['expected_inflow']:,.0f}, Forecasted Demand: {sample_row['forecasted_demand']:,.0f}")
                     print(f"  Projected Inventory: {sample_row['projected_inventory']:,.0f}")
                     print(f"  Overstock: {max(0, sample_row['projected_inventory'] - sample_row['safety_stock']):,.0f}")
-            
+
             # Overstock: Projected inventory above safety stock
             df_latest_inventory["overstock"] = (
                 df_latest_inventory["projected_inventory"]
@@ -599,20 +609,20 @@ def consumption_dashboard():
             ).clip(lower=0)
 
             overstock = json_safe(df_latest_inventory["overstock"].sum())
-            
+
             # Days to Stockout: Calculate minimum days until any material hits zero
             # Formula: Current Stock / Daily Demand Rate (considering inflow)
             df_latest_inventory["daily_demand"] = df_latest_inventory["forecasted_demand"] / forecast_days
             df_latest_inventory["daily_inflow"] = df_latest_inventory["expected_inflow"] / forecast_days
             df_latest_inventory["net_daily_consumption"] = df_latest_inventory["daily_demand"] - df_latest_inventory["daily_inflow"]
-            
+
             # Days until stockout = Current Stock / Net Daily Consumption
             df_latest_inventory["days_to_stockout"] = df_latest_inventory.apply(
-                lambda row: row["closing_inventory"] / row["net_daily_consumption"] 
+                lambda row: row["closing_inventory"] / row["net_daily_consumption"]
                 if row["net_daily_consumption"] > 0 else 999,  # 999 = no risk
                 axis=1
             )
-            
+
             # Find the minimum days to stockout across all materials
             min_days_to_stockout = df_latest_inventory["days_to_stockout"].min()
             days_to_stockout = json_safe(round(min_days_to_stockout, 0))
@@ -623,7 +633,7 @@ def consumption_dashboard():
         # Forecast Accuracy - Compare daily averages
         forecast_daily_avg = total_forecasted_demand / forecast_days if forecast_days > 0 else 0
         historical_daily_avg = trailing_consumption / historical_days if trailing_consumption > 0 else 0
-        
+
         if historical_daily_avg > 0:
             mape = abs(forecast_daily_avg - historical_daily_avg) / historical_daily_avg * 100
             accuracy = max(0, min(100, 100 - mape))
@@ -637,7 +647,7 @@ def consumption_dashboard():
             "projectedOverstock": format_kpi(overstock, overstock + 500),
             "daysToStockout": format_kpi(days_to_stockout, days_to_stockout + 5),
         }
-        
+
         # Cutoff date for UI
         forecast_cutoff = FORECAST_CUTOFF_DATE.strftime('%Y-%m-%d')
 
@@ -645,21 +655,21 @@ def consumption_dashboard():
         # TREND DATA - INDUSTRY STANDARD FORMAT
         # Last 30 days historical + Next 7/30 days forecast (Daily level)
         # ===============================
-        
+
         # Get daily forecast data
         if not df_demand.empty:
             daily_forecast_by_date = df_demand.groupby("date")["material_demand_units"].sum().reset_index()
             daily_forecast_by_date.columns = ["date", "forecast"]
         else:
             daily_forecast_by_date = pd.DataFrame(columns=["date", "forecast"])
-        
+
         # Get daily historical actuals (consumed_quantity from inventory)
         # If a product is selected, allocate consumption proportionally based on demand share
         if not df_inventory_historical.empty:
             if product and product != "all" and not df_bom_expanded.empty:
                 # Calculate product-specific daily consumption by allocating proportionally
                 daily_historical_by_date = pd.DataFrame()
-                
+
                 # Get product's demand share for each raw material
                 df_bom_product_all = df_bom_expanded[df_bom_expanded["product_id"] == product].copy()
                 if not df_bom_product_all.empty:
@@ -667,35 +677,35 @@ def consumption_dashboard():
                         df_bom_product_all["product_units"] * df_bom_product_all["consumption_per_unit"]
                     )
                     product_demand_by_rm = df_bom_product_all.groupby("raw_material")["material_demand_units"].sum()
-                    
+
                     # Get total demand by raw material (all products) for allocation
                     total_demand_by_rm_all = df_bom_expanded.copy()
                     total_demand_by_rm_all["material_demand_units"] = (
                         total_demand_by_rm_all["product_units"] * total_demand_by_rm_all["consumption_per_unit"]
                     )
                     total_demand_by_rm_all = total_demand_by_rm_all.groupby("raw_material")["material_demand_units"].sum()
-                    
+
                     # Allocate consumption by date and raw material
                     daily_allocated = []
                     for date in df_inventory_historical["date"].unique():
                         date_data = df_inventory_historical[df_inventory_historical["date"] == date]
                         allocated_consumption = 0
-                        
+
                         for _, row in date_data.iterrows():
                             raw_mat = row["raw_material"]
                             total_consumption = row["consumed_quantity"]
                             product_demand = product_demand_by_rm.get(raw_mat, 0)
                             total_demand = total_demand_by_rm_all.get(raw_mat, 0)
-                            
+
                             if total_demand > 0:
                                 allocation_factor = product_demand / total_demand
                                 allocated_consumption += total_consumption * allocation_factor
-                        
+
                         daily_allocated.append({
                             "date": date,
                             "actual": allocated_consumption
                         })
-                    
+
                     daily_historical_by_date = pd.DataFrame(daily_allocated)
                 else:
                     daily_historical_by_date = pd.DataFrame(columns=["date", "actual"])
@@ -705,10 +715,10 @@ def consumption_dashboard():
                 daily_historical_by_date.columns = ["date", "actual"]
         else:
             daily_historical_by_date = pd.DataFrame(columns=["date", "actual"])
-        
+
         # Build combined trend data
         trend_rows = []
-        
+
         # Part 1: Historical actuals (no forecast)
         for _, row in daily_historical_by_date.iterrows():
             trend_rows.append({
@@ -717,7 +727,7 @@ def consumption_dashboard():
                 "forecast": None,
                 "period": "historical"
             })
-        
+
         # Part 2: Future forecast (no actual)
         for _, row in daily_forecast_by_date.iterrows():
             trend_rows.append({
@@ -726,9 +736,9 @@ def consumption_dashboard():
                 "forecast": row["forecast"],
                 "period": "forecast"
             })
-        
+
         combined_data = pd.DataFrame(trend_rows)
-        
+
         # Aggregate trend data based on aggregation setting
         trend_data = []
         if not combined_data.empty:
@@ -750,7 +760,7 @@ def consumption_dashboard():
                 # Daily - no aggregation
                 trend_agg = combined_data.copy()
                 trend_agg["bucket"] = trend_agg["date"]
-            
+
             for _, row in trend_agg.iterrows():
                 # Format date properly - convert to string if it's a datetime
                 bucket_date = row["bucket"]
@@ -760,14 +770,14 @@ def consumption_dashboard():
                     date_str = bucket_date
                 else:
                     date_str = str(bucket_date)
-                
+
                 trend_data.append({
                     "date": date_str,
                     "forecast": json_safe(row["forecast"]) if pd.notna(row.get("forecast")) else None,
                     "actual": json_safe(row["actual"]) if pd.notna(row.get("actual")) else None,
                     "period": row.get("period", "historical")
                 })
-        
+
         df_inventory_trend = df_inventory_historical
 
         # ===============================
@@ -776,44 +786,44 @@ def consumption_dashboard():
         # ===============================
         forecast_comparison_data = []
         confidence_pct = 0.15
-        
+
         # Build weekly data from daily historical and forecast
         weekly_dict = {}  # Use dict to merge by week
-        
+
         # Part 1: Historical actuals (weekly aggregation)
         if not df_inventory_historical.empty:
             df_hist_weekly = df_inventory_historical.copy()
             df_hist_weekly["week"] = df_hist_weekly["date"].dt.to_period("W").dt.start_time
             hist_weekly_agg = df_hist_weekly.groupby("week")["consumed_quantity"].sum().reset_index()
-            
+
             for _, row in hist_weekly_agg.iterrows():
                 week_key = row["week"]
                 if week_key not in weekly_dict:
                     weekly_dict[week_key] = {"week": week_key, "actual": 0, "forecast": 0}
                 weekly_dict[week_key]["actual"] += row["consumed_quantity"]
-        
+
         # Part 2: Future forecast (weekly aggregation)
         if not df_demand.empty:
             df_fcst_weekly = df_demand.copy()
             df_fcst_weekly["week"] = df_fcst_weekly["date"].dt.to_period("W").dt.start_time
             fcst_weekly_agg = df_fcst_weekly.groupby("week")["material_demand_units"].sum().reset_index()
-            
+
             for _, row in fcst_weekly_agg.iterrows():
                 week_key = row["week"]
                 if week_key not in weekly_dict:
                     weekly_dict[week_key] = {"week": week_key, "actual": 0, "forecast": 0}
                 weekly_dict[week_key]["forecast"] += row["material_demand_units"]
-        
+
         # Convert to sorted list and format
         cutoff_week = FORECAST_CUTOFF_DATE.to_period("W").start_time
-        
+
         for week_key in sorted(weekly_dict.keys()):
             data = weekly_dict[week_key]
             week_str = week_key.strftime("%b %d") if hasattr(week_key, "strftime") else str(week_key)
-            
+
             actual_val = data["actual"] if data["actual"] > 0 else None
             forecast_val = data["forecast"] if data["forecast"] > 0 else None
-            
+
             # Determine period based on whether it's before or after cutoff
             if week_key < cutoff_week:
                 period = "historical"
@@ -821,7 +831,7 @@ def consumption_dashboard():
                 period = "forecast"
             else:
                 period = "transition"  # Cutoff week has both
-            
+
             # Calculate confidence bands only for forecast values
             if forecast_val and forecast_val > 0:
                 conf_low = forecast_val * (1 - confidence_pct)
@@ -829,7 +839,7 @@ def consumption_dashboard():
             else:
                 conf_low = None
                 conf_high = None
-            
+
             forecast_comparison_data.append({
                 "date": week_str,
                 "actual": json_safe(actual_val) if actual_val else None,
@@ -843,7 +853,7 @@ def consumption_dashboard():
         # DEMAND FLOW FUNNEL
         # ===============================
         sku_units = json_safe(safe_sum(df_forecast, "forecast_units"))
-        
+
         if not df_forecast.empty and not df_sku_master.empty:
             forecasted_skus = df_forecast["sku_id"].unique()
             products_from_skus = df_sku_master[
@@ -853,7 +863,7 @@ def consumption_dashboard():
         else:
             products_from_skus = []
             product_count = 0
-        
+
         df_bom_expanded = load_csv("product_bom_expanded.csv")
         if not df_bom_expanded.empty and len(products_from_skus) > 0:
             df_bom_filtered = df_bom_expanded[
@@ -863,7 +873,7 @@ def consumption_dashboard():
             product_forecast_units = json_safe(product_units_df["product_units"].sum() if "product_units" in product_units_df.columns else 0)
         else:
             product_forecast_units = sku_units
-        
+
         raw_material_demand_units = json_safe(total_forecasted_demand)
 
         funnel = {
@@ -886,7 +896,7 @@ def consumption_dashboard():
         # Historical average: Last 30 days (Dec 1-30, 2025)
         # ===============================
         heatmap_data = []
-        
+
         if not df_inventory_historical.empty and not df_demand.empty:
             # Calculate 30-day historical average for each raw material (Dec 1-30, 2025)
             historical_30d = df_inventory_historical[
@@ -894,15 +904,15 @@ def consumption_dashboard():
                 (df_inventory_historical["date"] <= FORECAST_CUTOFF_DATE)
             ]
             avg_by_rm = historical_30d.groupby("raw_material")["consumed_quantity"].mean()
-            
+
             # Get forecasted consumption from Dec 31, 2025 onwards
             forecast_start_date = FORECAST_CUTOFF_DATE + timedelta(days=1)
             df_forecast_period = df_demand[df_demand["date"] >= forecast_start_date].copy()
-            
+
             if not df_forecast_period.empty:
                 # Get forecasted consumption by date and raw material
                 forecast_by_date_rm = df_forecast_period.groupby(["date", "raw_material"])["material_demand_units"].sum().reset_index()
-                
+
                 # Limit to forecast period dates (Dec 31, 2025 onwards) - show next 7 or 30 days based on filter
                 forecast_dates = sorted(forecast_by_date_rm["date"].unique())
                 if forecast_days == 7:
@@ -910,26 +920,26 @@ def consumption_dashboard():
                 else:
                     forecast_dates = forecast_dates[:30]
                 forecast_by_date_rm = forecast_by_date_rm[forecast_by_date_rm["date"].isin(forecast_dates)]
-                
+
                 # Limit to top 6 raw materials by volume (based on historical average)
                 top_materials = avg_by_rm.nlargest(6).index.tolist()
                 forecast_by_date_rm = forecast_by_date_rm[forecast_by_date_rm["raw_material"].isin(top_materials)]
-                
+
                 for _, row in forecast_by_date_rm.iterrows():
                     date_val = row["date"]
                     rm = row["raw_material"]
                     forecasted = row["material_demand_units"]
-                    
+
                     historical_avg = avg_by_rm.get(rm, 0)
-                    
+
                     if historical_avg > 0:
                         variance_pct = ((forecasted - historical_avg) / historical_avg) * 100
                     else:
                         variance_pct = 0
-                    
+
                     # Format date nicely
                     date_str = date_val.strftime("%b %d") if hasattr(date_val, "strftime") else str(date_val)[:10]
-                    
+
                     heatmap_data.append({
                         "date": date_str,
                         "rawMaterial": str(rm),
@@ -942,7 +952,7 @@ def consumption_dashboard():
         # RAW MATERIAL RISK TABLE
         # ===============================
         risk_table_data = []
-        
+
         if not df_inventory_historical.empty and not df_demand.empty:
             df_inv_latest = (
                 df_inventory_historical
@@ -950,7 +960,7 @@ def consumption_dashboard():
                 .groupby("raw_material", as_index=False)
                 .tail(1)
             )
-            
+
             # Get consumption by raw material - allocate if product filter is selected
             if product and product != "all" and not df_bom_expanded.empty:
                 # Calculate product-specific consumption allocation
@@ -960,13 +970,13 @@ def consumption_dashboard():
                         df_bom_product_all["product_units"] * df_bom_product_all["consumption_per_unit"]
                     )
                     product_demand_by_rm = df_bom_product_all.groupby("raw_material")["material_demand_units"].sum()
-                    
+
                     total_demand_by_rm_all = df_bom_expanded.copy()
                     total_demand_by_rm_all["material_demand_units"] = (
                         total_demand_by_rm_all["product_units"] * total_demand_by_rm_all["consumption_per_unit"]
                     )
                     total_demand_by_rm_all = total_demand_by_rm_all.groupby("raw_material")["material_demand_units"].sum()
-                    
+
                     # Allocate consumption proportionally
                     consumption_by_rm = {}
                     total_consumption_by_rm = df_inventory_historical.groupby("raw_material")["consumed_quantity"].sum()
@@ -983,23 +993,23 @@ def consumption_dashboard():
                     consumption_by_rm = pd.Series()
             else:
                 consumption_by_rm = df_inventory_historical.groupby("raw_material")["consumed_quantity"].sum()
-            
+
             forecast_by_rm = df_demand.groupby("raw_material")["material_demand_units"].sum()
-            
+
             # Get expected inflow for stockout date calculation
             if not df_inventory_full.empty and "inflow_quantity" in df_inventory_full.columns:
                 avg_daily_inflow_by_rm = df_inventory_full.groupby("raw_material")["inflow_quantity"].mean()
             else:
                 avg_daily_inflow_by_rm = pd.Series()
-            
+
             for idx, row in df_inv_latest.iterrows():
                 rm = row["raw_material"]
                 closing_inv = row.get("closing_inventory", 0)
                 safety_stock = row.get("safety_stock", 0)
-                
+
                 forecast_demand = forecast_by_rm.get(rm, 0)
                 actual_consumption = consumption_by_rm.get(rm, 0) if isinstance(consumption_by_rm, pd.Series) else consumption_by_rm.get(rm, 0)
-                
+
                 # Allocate inventory values if product filter is selected
                 allocation_factor = 1.0  # Default: no allocation
                 if product and product != "all" and not df_bom_expanded.empty:
@@ -1009,27 +1019,27 @@ def consumption_dashboard():
                             df_bom_product_all["product_units"] * df_bom_product_all["consumption_per_unit"]
                         )
                         product_demand_by_rm = df_bom_product_all.groupby("raw_material")["material_demand_units"].sum()
-                        
+
                         total_demand_by_rm_all = df_bom_expanded.copy()
                         total_demand_by_rm_all["material_demand_units"] = (
                             total_demand_by_rm_all["product_units"] * total_demand_by_rm_all["consumption_per_unit"]
                         )
                         total_demand_by_rm_all = total_demand_by_rm_all.groupby("raw_material")["material_demand_units"].sum()
-                        
+
                         product_demand = product_demand_by_rm.get(rm, 0)
                         total_demand = total_demand_by_rm_all.get(rm, 0)
                         if total_demand > 0:
                             allocation_factor = product_demand / total_demand
                             closing_inv = closing_inv * allocation_factor
                             safety_stock = safety_stock * allocation_factor
-                
+
                 # Calculate daily consumption rate for stockout date
                 daily_consumption = actual_consumption / historical_days if historical_days > 0 else 0
                 # Allocate daily inflow proportionally if product filter is selected
                 daily_inflow_total = avg_daily_inflow_by_rm.get(rm, 0) if isinstance(avg_daily_inflow_by_rm, pd.Series) else avg_daily_inflow_by_rm.get(rm, 0)
                 daily_inflow = daily_inflow_total * allocation_factor  # Allocate inflow proportionally
                 net_daily_consumption = daily_consumption - daily_inflow
-                
+
                 # Calculate stockout risk date
                 if net_daily_consumption > 0 and closing_inv > 0:
                     days_until_stockout = closing_inv / net_daily_consumption
@@ -1040,7 +1050,7 @@ def consumption_dashboard():
                         stockout_risk_date = None  # Too far in future to be meaningful
                 else:
                     stockout_risk_date = None  # No risk (inflow >= consumption or no inventory)
-                
+
                 # Risk status determination
                 if closing_inv < 0 or closing_inv < safety_stock * 0.5:
                     risk_status = "Stockout"
@@ -1048,7 +1058,7 @@ def consumption_dashboard():
                     risk_status = "Overstock"
                 else:
                     risk_status = "Balanced"
-                
+
                 risk_table_data.append({
                     "id": str(rm),
                     "rawMaterial": str(rm),
@@ -1090,40 +1100,40 @@ def sales_dashboard():
         category = request.args.get("category")
         product = request.args.get("product")  # NEW: Product filter
         rolling_window = request.args.get("rollingWindow", "7")  # 7 or 30
-        
-        
+
+
         # Determine forecast horizon from new filter format
         forecast_days = get_forecast_horizon_days(date_range)
         forecast_horizon = f"{forecast_days}day"
-        
+
         df_forecast = load_csv("sku_daily_forecast.csv")
         df_sales = load_csv("sku_daily_sales.csv")
         df_sku_master = load_csv("sku_master.csv")
-        
+
         # Parse dates
         if not df_forecast.empty:
             df_forecast['date'] = pd.to_datetime(df_forecast['date'], errors='coerce')
         if not df_sales.empty:
             df_sales['date'] = pd.to_datetime(df_sales['date'], errors='coerce')
-        
+
         # Filter forecast by horizon (7day or 30day)
         if not df_forecast.empty and "forecast_horizon" in df_forecast.columns:
             df_forecast = df_forecast[df_forecast["forecast_horizon"] == forecast_horizon]
-        
+
         # Get last N days of historical sales (based on filter)
         historical_days = forecast_days  # Match historical period to forecast period
         historical_start = FORECAST_CUTOFF_DATE - timedelta(days=historical_days - 1)
         df_sales_historical = df_sales[
-            (df_sales["date"] >= historical_start) & 
+            (df_sales["date"] >= historical_start) &
             (df_sales["date"] <= FORECAST_CUTOFF_DATE)
         ].copy() if not df_sales.empty else pd.DataFrame()
-        
+
         # Apply product filter FIRST - filter by SKUs belonging to this product
         if product and product != "all" and not df_sku_master.empty:
             valid_skus = df_sku_master[df_sku_master["product_id"] == product]["sku_id"].unique()
             df_forecast = df_forecast[df_forecast["sku_id"].isin(valid_skus)]
             df_sales_historical = df_sales_historical[df_sales_historical["sku_id"].isin(valid_skus)] if not df_sales_historical.empty else df_sales_historical
-        
+
         # Apply channel weight
         channel_weight = 1.0
         if channel and channel != "all" and not df_sales_historical.empty:
@@ -1132,24 +1142,24 @@ def sales_dashboard():
             if total_all > 0:
                 channel_weight = channel_sales / total_all
             df_sales_historical = df_sales_historical[df_sales_historical["sales_channel"] == channel]
-        
+
         # Apply store filter
         if store and store != "all":
             if not df_forecast.empty and "store_id" in df_forecast.columns:
                 df_forecast = df_forecast[df_forecast["store_id"] == store]
             df_sales_historical = df_sales_historical[df_sales_historical["store_id"] == store] if not df_sales_historical.empty else df_sales_historical
-        
+
         # Apply SKU filter
         if sku_filter and sku_filter != "all":
             df_forecast = df_forecast[df_forecast["sku_id"] == sku_filter]
             df_sales_historical = df_sales_historical[df_sales_historical["sku_id"] == sku_filter] if not df_sales_historical.empty else df_sales_historical
-        
+
         # Apply category filter
         if category and category != "all" and not df_sku_master.empty:
             valid_skus = df_sku_master[df_sku_master["category"] == category]["sku_id"].unique()
             df_forecast = df_forecast[df_forecast["sku_id"].isin(valid_skus)]
             df_sales_historical = df_sales_historical[df_sales_historical["sku_id"].isin(valid_skus)] if not df_sales_historical.empty else df_sales_historical
-        
+
         # Apply channel weight to forecast
         if channel_weight < 1.0 and not df_forecast.empty:
             df_forecast = df_forecast.copy()
@@ -1161,19 +1171,19 @@ def sales_dashboard():
         total_forecast_units = safe_sum(df_forecast, 'forecast_units')
         total_historical_units = safe_sum(df_sales_historical, 'actual_sales_units')
         volatility = df_forecast['forecast_units'].std() if 'forecast_units' in df_forecast.columns and len(df_forecast) > 0 else 0
-        
+
         # Calculate average daily rates for comparison
         forecast_daily_avg = total_forecast_units / forecast_days if forecast_days > 0 else 0
         # Use historical_days (which matches forecast_days) instead of hardcoded 30
         historical_daily_avg = total_historical_units / historical_days if historical_days > 0 and not df_sales_historical.empty else 0
-        
+
         # Calculate accuracy based on avg daily comparison
         if historical_daily_avg > 0:
             mape = abs(forecast_daily_avg - historical_daily_avg) / historical_daily_avg * 100
             accuracy = max(0, min(100, 100 - mape))
         else:
             accuracy = 0
-        
+
         # Calculate bias
         if historical_daily_avg > 0:
             bias = ((forecast_daily_avg - historical_daily_avg) / historical_daily_avg) * 100
@@ -1194,23 +1204,23 @@ def sales_dashboard():
         # ===============================
         sales_trend = []
         forecast_cutoff = FORECAST_CUTOFF_DATE.strftime('%Y-%m-%d')
-        
+
         if not df_sales_historical.empty or not df_forecast.empty:
             # Get list of channels from historical data
             channels = df_sales_historical['sales_channel'].unique().tolist() if not df_sales_historical.empty else []
-            
+
             # --- PART 1: Historical Actuals (last 30 days) ---
             if not df_sales_historical.empty:
                 # Create date range for historical period (ensure all dates are included)
                 historical_start = FORECAST_CUTOFF_DATE - timedelta(days=historical_days - 1)
                 date_range = pd.date_range(start=historical_start, end=FORECAST_CUTOFF_DATE, freq='D')
-                
+
                 # Ensure dates in historical data are datetime
                 df_sales_historical['date'] = pd.to_datetime(df_sales_historical['date'])
-                
+
                 # Group historical data by date and channel
                 historical_by_date_channel = df_sales_historical.groupby(['date', 'sales_channel'])['actual_sales_units'].sum().reset_index()
-                
+
                 # Create a complete date-channel matrix to ensure all dates have entries (even if 0)
                 for date in date_range:
                     date_str = date.strftime('%Y-%m-%d')
@@ -1218,15 +1228,15 @@ def sales_dashboard():
                         # Find matching row for this date and channel (normalize dates for comparison)
                         date_normalized = pd.Timestamp(date).normalize()
                         matching = historical_by_date_channel[
-                            (pd.to_datetime(historical_by_date_channel['date']).dt.normalize() == date_normalized) & 
+                            (pd.to_datetime(historical_by_date_channel['date']).dt.normalize() == date_normalized) &
                             (historical_by_date_channel['sales_channel'] == ch)
                         ]
-                        
+
                         if not matching.empty:
                             actual_value = int(matching.iloc[0]['actual_sales_units'])
                         else:
                             actual_value = 0  # No sales on this date for this channel
-                        
+
                         sales_trend.append({
                             "date": json_safe(date_str),
                             "channel": ch,
@@ -1234,19 +1244,19 @@ def sales_dashboard():
                             "forecast": None,  # No forecast for historical period
                             "period": "historical"
                         })
-            
+
             # --- PART 2: Future Forecast (next 7/30 days) ---
             if not df_forecast.empty and channels:
                 # Get channel proportions from historical data (overall and daily)
                 channel_totals = df_sales_historical.groupby('sales_channel')['actual_sales_units'].sum() if not df_sales_historical.empty else pd.Series()
                 total_sales = channel_totals.sum() if len(channel_totals) > 0 else 1
                 channel_proportions = (channel_totals / total_sales).to_dict() if total_sales > 0 else {}
-                
+
                 # Calculate daily channel proportions from historical data (to preserve daily variation patterns)
                 df_sales_historical['date'] = pd.to_datetime(df_sales_historical['date'])
                 daily_channel_sales = df_sales_historical.groupby(['date', 'sales_channel'])['actual_sales_units'].sum().reset_index()
                 daily_totals = df_sales_historical.groupby('date')['actual_sales_units'].sum()
-                
+
                 # Create daily channel proportion lookup
                 daily_channel_props = {}
                 for _, row in daily_channel_sales.iterrows():
@@ -1256,13 +1266,13 @@ def sales_dashboard():
                     if date_key not in daily_channel_props:
                         daily_channel_props[date_key] = {}
                     daily_channel_props[date_key][ch] = row['actual_sales_units'] / daily_total if daily_total > 0 else channel_proportions.get(ch, 1.0 / len(channels))
-                
+
                 # Daily forecast totals (preserve daily variation)
                 daily_forecast = df_forecast.groupby('date')['forecast_units'].sum().reset_index()
                 daily_forecast.columns = ['date', 'forecast']
                 daily_forecast = daily_forecast.sort_values('date')
                 daily_forecast['date'] = pd.to_datetime(daily_forecast['date'])
-                
+
                 # Get day of week pattern from historical data (to match weekly patterns)
                 df_sales_historical['day_of_week'] = pd.to_datetime(df_sales_historical['date']).dt.dayofweek
                 weekly_channel_patterns = {}
@@ -1270,22 +1280,22 @@ def sales_dashboard():
                     ch_data = df_sales_historical[df_sales_historical['sales_channel'] == ch]
                     if not ch_data.empty:
                         weekly_channel_patterns[ch] = ch_data.groupby('day_of_week')['actual_sales_units'].mean().to_dict()
-                
+
                 for _, row in daily_forecast.iterrows():
                     forecast_date = row['date']
                     forecast_date_str = forecast_date.strftime('%Y-%m-%d')
                     total_forecast = row['forecast']
                     day_of_week = forecast_date.dayofweek
-                    
+
                     # Try to use daily proportions from similar historical days, fallback to overall proportions
                     # Look for historical dates with same day of week (to preserve weekly patterns)
                     similar_dates = df_sales_historical[df_sales_historical['day_of_week'] == day_of_week]
-                    
+
                     if not similar_dates.empty:
                         # Use average proportions for this day of week
                         similar_daily_totals = similar_dates.groupby('date')['actual_sales_units'].sum()
                         similar_channel_sales = similar_dates.groupby(['date', 'sales_channel'])['actual_sales_units'].sum().reset_index()
-                        
+
                         day_of_week_props = {}
                         for ch in channels:
                             ch_sales = similar_channel_sales[similar_channel_sales['sales_channel'] == ch]['actual_sales_units']
@@ -1300,12 +1310,12 @@ def sales_dashboard():
                         day_of_week_props = channel_proportions.copy()
                         if not day_of_week_props:
                             day_of_week_props = {ch: 1.0 / len(channels) for ch in channels}
-                    
+
                     for ch in channels:
                         # Allocate forecast to channels based on day-of-week patterns (preserves variation)
                         ch_proportion = day_of_week_props.get(ch, channel_proportions.get(ch, 1.0 / len(channels)))
                         ch_forecast = int(total_forecast * ch_proportion)
-                        
+
                         sales_trend.append({
                             "date": json_safe(forecast_date_str),
                             "channel": ch,
@@ -1321,49 +1331,49 @@ def sales_dashboard():
         if not df_forecast.empty and not df_sales_historical.empty:
             # Get number of forecast days
             forecast_days = df_forecast['date'].nunique()
-            
+
             # Calculate metrics per SKU from forecast
             sku_forecast_agg = df_forecast.groupby('sku_id').agg({
                 'forecast_units': ['sum', 'std', 'mean']
             }).reset_index()
             sku_forecast_agg.columns = ['sku_id', 'total_forecast', 'volatility', 'avg_forecast_daily']
-            
+
             # Calculate actual metrics from historical sales
             sku_actual_agg = df_sales_historical.groupby('sku_id').agg({
                 'actual_sales_units': ['sum', 'mean', 'std']
             }).reset_index()
             sku_actual_agg.columns = ['sku_id', 'total_actual', 'avg_daily', 'actual_volatility']
-            
+
             # Merge
             sku_metrics = pd.merge(sku_forecast_agg, sku_actual_agg, on='sku_id', how='outer').fillna(0)
-            
+
             # Add category from master
             if not df_sku_master.empty and 'category' in df_sku_master.columns:
-                sku_metrics = pd.merge(sku_metrics, df_sku_master[['sku_id', 'category']].drop_duplicates(), 
+                sku_metrics = pd.merge(sku_metrics, df_sku_master[['sku_id', 'category']].drop_duplicates(),
                                        on='sku_id', how='left')
             else:
                 sku_metrics['category'] = 'Unknown'
-            
+
             # Calculate accuracy: Compare forecast avg daily with historical avg daily
             # This gives a realistic accuracy measure
             sku_metrics['accuracy'] = sku_metrics.apply(
-                lambda row: max(0, 100 - abs(row['avg_forecast_daily'] - row['avg_daily']) / row['avg_daily'] * 100) 
+                lambda row: max(0, 100 - abs(row['avg_forecast_daily'] - row['avg_daily']) / row['avg_daily'] * 100)
                 if row['avg_daily'] > 0 else 0, axis=1
             )
-            
+
             # Cap accuracy at 100
             sku_metrics['accuracy'] = sku_metrics['accuracy'].clip(upper=100)
-            
+
             # Determine risk using RELATIVE thresholds (bottom performers)
             # This ensures actionable insights even when overall accuracy is high
             accuracy_mean = sku_metrics['accuracy'].mean()
             accuracy_std = sku_metrics['accuracy'].std() if len(sku_metrics) > 1 else 1
             volatility_mean = sku_metrics['volatility'].mean()
-            
+
             # Dynamic thresholds based on distribution
             high_risk_threshold = accuracy_mean - accuracy_std  # Bottom ~16%
             med_risk_threshold = accuracy_mean - (accuracy_std * 0.3)  # Bottom ~35%
-            
+
             def calc_risk(row):
                 # High risk: bottom performers OR very high volatility
                 if row['accuracy'] < high_risk_threshold:
@@ -1374,9 +1384,9 @@ def sales_dashboard():
                     return 'Medium'
                 else:
                     return 'Low'
-            
+
             sku_metrics['risk'] = sku_metrics.apply(calc_risk, axis=1)
-            
+
             sku_performance = [
                 {
                     "id": idx + 1,
@@ -1390,7 +1400,7 @@ def sales_dashboard():
                 }
                 for idx, (_, row) in enumerate(sku_metrics.iterrows())
             ]
-            
+
             # Update high risk count in KPIs
             high_risk_count = len(sku_metrics[sku_metrics['risk'] == 'High'])
             kpis["highRiskSKUsCount"] = format_kpi(high_risk_count, high_risk_count)
@@ -1403,26 +1413,26 @@ def sales_dashboard():
         if not df_forecast.empty and {'sku_id', 'date', 'forecast_units'}.issubset(df_forecast.columns):
             # Group by SKU and date
             sku_date_grp = df_forecast.groupby(['sku_id', 'date'])['forecast_units'].sum().reset_index()
-            
+
             # Calculate total per date for contribution %
             date_totals = sku_date_grp.groupby('date')['forecast_units'].sum().reset_index()
             date_totals.columns = ['date', 'date_total']
-            
+
             sku_date_grp = pd.merge(sku_date_grp, date_totals, on='date')
             sku_date_grp['contribution_pct'] = (sku_date_grp['forecast_units'] / sku_date_grp['date_total'] * 100).round(2)
-            
+
             # Select top 10 SKUs by total forecast volume (most impactful)
             top_skus = df_forecast.groupby('sku_id')['forecast_units'].sum().nlargest(10).index.tolist()
-            
+
             # Limit to 10 dates for readability (most recent forecast dates)
             recent_dates = sorted(sku_date_grp['date'].unique())[-10:]
-            
+
             # Filter data
             sku_date_filtered = sku_date_grp[
-                (sku_date_grp['sku_id'].isin(top_skus)) & 
+                (sku_date_grp['sku_id'].isin(top_skus)) &
                 (sku_date_grp['date'].isin(recent_dates))
             ]
-            
+
             heatmap = [
                 {
                     "sku": str(row['sku_id']),
@@ -1442,7 +1452,7 @@ def sales_dashboard():
             total_demand = sku_totals['forecast_units'].sum()
             sku_totals['contribution_pct'] = (sku_totals['forecast_units'] / total_demand * 100).round(2) if total_demand > 0 else 0
             sku_totals = sku_totals.nlargest(10, 'forecast_units')
-            
+
             top_demand_drivers = [
                 {
                     "sku": str(row['sku_id']),
@@ -1486,25 +1496,25 @@ def sales_dashboard():
             window_days = int(rolling_window)
             forecast_start_date = FORECAST_CUTOFF_DATE + timedelta(days=1)  # Dec 31, 2025
             forecast_end_date = forecast_start_date + timedelta(days=window_days - 1)  # Limit to window_days
-            
+
             # Get daily aggregated data
             df_historical_daily = df_sales_historical.groupby('date')['actual_sales_units'].sum().reset_index()
             df_historical_daily = df_historical_daily.sort_values('date').reset_index(drop=True)
             df_forecast_daily = df_forecast.groupby('date')['forecast_units'].sum().reset_index()
             df_forecast_daily = df_forecast_daily.sort_values('date').reset_index(drop=True)
-            
+
             # Filter forecast data to only include dates from Dec 31, 2025 onwards, limited to window_days
             df_forecast_daily_filtered = df_forecast_daily[
-                (df_forecast_daily['date'] >= forecast_start_date) & 
+                (df_forecast_daily['date'] >= forecast_start_date) &
                 (df_forecast_daily['date'] <= forecast_end_date)
             ].copy()
-            
+
             # Calculate rolling average from historical data (last N days before cutoff)
             if len(df_historical_daily) >= window_days:
                 historical_rolling_avg = df_historical_daily.tail(window_days)['actual_sales_units'].mean()
             else:
                 historical_rolling_avg = df_historical_daily['actual_sales_units'].mean() if len(df_historical_daily) > 0 else 0
-            
+
             # Calculate error for forecast period only (Dec 31, 2025 onwards, limited to window_days)
             for _, row in df_forecast_daily_filtered.iterrows():
                 forecast_val = row['forecast_units']
@@ -1527,7 +1537,7 @@ def sales_dashboard():
             # Calculate deviation per SKU
             sku_forecast_sum = df_forecast.groupby('sku_id')['forecast_units'].sum()
             sku_actual_sum = df_sales_historical.groupby('sku_id')['actual_sales_units'].sum()
-            
+
             deviations = []
             for sku in sku_forecast_sum.index:
                 forecast = sku_forecast_sum.get(sku, 0)
@@ -1535,13 +1545,13 @@ def sales_dashboard():
                 if actual > 0:
                     deviation = ((forecast - actual) / actual) * 100
                     deviations.append(deviation)
-            
+
             # Create histogram buckets (under/accurate/over format for frontend)
             if deviations:
                 under_count = len([d for d in deviations if d < -10])  # Under-forecast
                 accurate_count = len([d for d in deviations if -10 <= d <= 10])  # Accurate band
                 over_count = len([d for d in deviations if d > 10])  # Over-forecast
-                
+
                 deviation_histogram = [
                     {"bucket": "under", "count": under_count},
                     {"bucket": "accurate", "count": accurate_count},
@@ -1617,10 +1627,10 @@ def get_products_by_raw_material():
         raw_material = request.args.get("rawMaterial")
         df_bom = load_csv("product_bom.csv")
         df_sku_master = load_csv("sku_master.csv")
-        
+
         if df_bom.empty or "raw_material" not in df_bom.columns:
             return jsonify({"products": []})
-        
+
         if raw_material and raw_material != "all":
             # Get products that use this raw material
             products_using_rm = df_bom[df_bom["raw_material"] == raw_material]["product_id"].unique()
@@ -1628,9 +1638,9 @@ def get_products_by_raw_material():
         else:
             # Return all products
             products = sorted(df_sku_master["product_id"].dropna().unique().astype(str))
-        
+
         return jsonify({"products": products})
-    
+
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": str(e), "products": []}), 500
@@ -1646,10 +1656,10 @@ def get_raw_materials_by_product():
         product = request.args.get("product")
         df_bom = load_csv("product_bom.csv")
         df_demand = load_csv("raw_material_demand.csv")
-        
+
         if df_bom.empty or "raw_material" not in df_bom.columns:
             return jsonify({"rawMaterials": []})
-        
+
         if product and product != "all":
             # Get raw materials used by this product
             raw_materials_used = df_bom[df_bom["product_id"] == product]["raw_material"].unique()
@@ -1657,9 +1667,9 @@ def get_raw_materials_by_product():
         else:
             # Return all raw materials
             raw_materials = sorted(df_demand["raw_material"].dropna().unique().astype(str))
-        
+
         return jsonify({"rawMaterials": raw_materials})
-    
+
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": str(e), "rawMaterials": []}), 500
@@ -1675,10 +1685,10 @@ def get_skus_by_category():
         category = request.args.get("category")
         df_sku_master = load_csv("sku_master.csv")
         df_forecast = load_csv("sku_daily_forecast.csv")
-        
+
         if df_sku_master.empty or "category" not in df_sku_master.columns:
             return jsonify({"skus": []})
-        
+
         if category and category != "all":
             # Get SKUs in this category
             skus_in_category = df_sku_master[df_sku_master["category"] == category]["sku_id"].unique()
@@ -1688,9 +1698,9 @@ def get_skus_by_category():
         else:
             # Return all SKUs that have forecast data
             skus = sorted(df_forecast["sku_id"].dropna().unique().astype(str)) if not df_forecast.empty else []
-        
+
         return jsonify({"skus": skus})
-    
+
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": str(e), "skus": []}), 500
@@ -1706,7 +1716,7 @@ def get_stores_by_sku():
         sku = request.args.get("sku")
         df_sales = load_csv("sku_daily_sales.csv")
         df_forecast = load_csv("sku_daily_forecast.csv")
-        
+
         if sku and sku != "all":
             # Get stores that have this SKU (from both sales and forecast data)
             stores_from_sales = df_sales[df_sales["sku_id"] == sku]["store_id"].unique() if not df_sales.empty and "store_id" in df_sales.columns else []
@@ -1720,9 +1730,9 @@ def get_stores_by_sku():
             stores_from_forecast = df_forecast["store_id"].dropna().unique() if not df_forecast.empty and "store_id" in df_forecast.columns else []
             all_stores = set(stores_from_sales) | set(stores_from_forecast)
             stores = sorted([str(s) for s in all_stores])
-        
+
         return jsonify({"stores": stores})
-    
+
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": str(e), "stores": []}), 500
@@ -1766,7 +1776,7 @@ def raw_material_material_table():
 def sku_forecast_table():
     try:
         forecast_horizon = request.args.get("forecastHorizon", "30day")
-        
+
         df = load_csv("sku_daily_forecast.csv")
 
         if df.empty:
@@ -1788,11 +1798,11 @@ def sku_forecast_table():
 def demand_flow_funnel():
     try:
         forecast_horizon = request.args.get("forecastHorizon", "30day")
-        
+
         sku_df = load_csv("sku_daily_forecast.csv")
         prod_df = load_csv("product_forecast.csv")
         rm_df = load_csv("raw_material_demand.csv")
-        
+
         # Filter by horizon
         if not sku_df.empty and "forecast_horizon" in sku_df.columns:
             sku_df = sku_df[sku_df["forecast_horizon"] == forecast_horizon]
@@ -1840,11 +1850,11 @@ def serve_frontend():
 def serve_static_or_spa(path):
     if not os.path.exists(WOODLAND_DIST_DIR):
         return jsonify({"error": "Frontend not built"}), 404
-    
+
     file_path = os.path.join(WOODLAND_DIST_DIR, path)
     if os.path.exists(file_path) and os.path.isfile(file_path):
         return send_from_directory(WOODLAND_DIST_DIR, path)
-    
+
     return send_from_directory(WOODLAND_DIST_DIR, "index.html")
 
 

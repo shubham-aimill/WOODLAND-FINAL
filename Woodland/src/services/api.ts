@@ -287,12 +287,26 @@ async function apiRequest<T>(
     ...options,
   };
 
-  const response = await fetch(url, config);
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `API Error: ${response.status}`);
+  try {
+    const response = await fetch(url, config);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error(`[API ERROR] ${url}`, {
+        status: response.status,
+        error: errorData,
+      });
+      throw new Error(errorData.message || `API Error: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(`[API SUCCESS] ${url}`, {
+      dataKeys: Object.keys(data),
+      rowCounts: data.kpis ? 'Has KPIs' : 'No KPIs',
+    });
+    return data;
+  } catch (error) {
+    console.error(`[API FETCH ERROR] ${url}`, error);
+    throw error;
   }
-  return response.json();
 }
 
 // function filtersToParams(filters: FilterState): URLSearchParams {
