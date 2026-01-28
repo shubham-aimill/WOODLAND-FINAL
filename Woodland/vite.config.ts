@@ -87,18 +87,25 @@ import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
   server: {
-    host: '::',
+    host: "::",
     port: 8080,
     hmr: {
       overlay: false,
     },
+    // --- PROXY CONFIGURATION ---
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:5052',
+        changeOrigin: true, // This is the key fix for 403
+        secure: false,      
+        rewrite: (path) => path // Ensures /api is passed through
+      }
+    }
   },
-  plugins: [react(), mode === 'development' && componentTagger()].filter(
-    Boolean
-  ),
+  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
 }));

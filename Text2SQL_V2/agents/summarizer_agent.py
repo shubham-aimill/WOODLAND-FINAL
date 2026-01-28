@@ -5,7 +5,8 @@ from Text2SQL_V2.utils.llm_factory import load_llm
 
 class SummarizerAgent:
     def __init__(self):
-        self.llm = load_llm(0.2)
+        # Increase max_tokens to 4000 to prevent response truncation
+        self.llm = load_llm(temp=0.2, max_tokens=4000)
 
     def summarize(self, q, df):
         prompt = f"""

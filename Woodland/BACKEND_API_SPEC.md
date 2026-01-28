@@ -112,7 +112,7 @@ Every dashboard request includes these. Backend should accept and optionally fil
   "kpis": {
     "skuForecastAccuracy": { "value": number, "trend": number, "direction": "up" | "down" | "neutral" },
     "totalForecastedUnits": { "value": number, "trend": number, "direction": "up" | "down" | "neutral" },
-    "forecastBias": { "value": number, "trend": number, "direction": "up" | "down" | "neutral" },
+    "baselineSales": { "value": number, "trend": number, "direction": "up" | "down" | "neutral" },
     "demandVolatilityIndex": { "value": number, "trend": number, "direction": "up" | "down" | "neutral" },
     "highRiskSKUsCount": { "value": number, "trend": number, "direction": "up" | "down" | "neutral" }
   },

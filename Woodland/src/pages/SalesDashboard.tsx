@@ -1,4 +1,4 @@
-import { Target, Package, TrendingDown, AlertCircle, Activity } from "lucide-react";
+import { Target, Package, BarChart3, AlertCircle, Activity } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { KPICard } from "@/components/dashboard/KPICard";
 import { SKUSalesTrendChart } from "@/components/dashboard/SKUSalesTrendChart";
@@ -24,17 +24,6 @@ const SalesDashboard = () => {
     <DashboardLayout dashboard="sales">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
         <KPICard
-          title="Forecast Accuracy"
-          value={kpis?.skuForecastAccuracy.value.toFixed(1) ?? "0"}
-          unit="%"
-          icon={<Target className="w-5 h-5" />}
-          trend={trend(kpis?.skuForecastAccuracy)}
-          status="success"
-          subtitle="MAPE vs baseline"
-          onClick={() => {}}
-          isLoading={isLoading}
-        />
-        <KPICard
           title="Projected Sales"
           value={kpis?.totalForecastedUnits.value.toLocaleString() ?? "0"}
           unit="units"
@@ -45,12 +34,23 @@ const SalesDashboard = () => {
           isLoading={isLoading}
         />
         <KPICard
-          title="Forecast Bias"
-          value={`${(kpis?.forecastBias.value ?? 0) >= 0 ? "+" : ""}${kpis?.forecastBias.value?.toFixed(1) ?? "0"}`}
+          title="Baseline Sales"
+          value={kpis?.baselineSales.value.toLocaleString() ?? "0"}
+          unit="units"
+          icon={<BarChart3 className="w-5 h-5" />}
+          trend={trend(kpis?.baselineSales)}
+          subtitle={`Last ${forecastDays} days actual`}
+          onClick={() => {}}
+          isLoading={isLoading}
+        />
+        <KPICard
+          title="Forecast Accuracy"
+          value={kpis?.skuForecastAccuracy.value.toFixed(1) ?? "0"}
           unit="%"
-          icon={<TrendingDown className="w-5 h-5" />}
-          trend={trend(kpis?.forecastBias)}
-          subtitle="Over (+) / Under (-) forecast"
+          icon={<Target className="w-5 h-5" />}
+          trend={trend(kpis?.skuForecastAccuracy)}
+          status="success"
+          subtitle="MAPE vs baseline"
           onClick={() => {}}
           isLoading={isLoading}
         />

@@ -259,7 +259,7 @@ const emptySalesData: SalesDashboardData = {
     kpis: {
         skuForecastAccuracy: { value: 0, trend: 0, direction: "neutral" },
         totalForecastedUnits: { value: 0, trend: 0, direction: "neutral" },
-        forecastBias: { value: 0, trend: 0, direction: "neutral" },
+        baselineSales: { value: 0, trend: 0, direction: "neutral" },
         demandVolatilityIndex: { value: 0, trend: 0, direction: "neutral" },
         highRiskSKUsCount: { value: 0, trend: 0, direction: "neutral" }
     },
@@ -434,7 +434,7 @@ export function useDemandFlowFunnel() {
 
 export function useForecastComparison() {
   const location = useLocation();
-  const consumption = useConsumptionDashboard(location.pathname !== "/sales");
+  const consumption = useConsumptionDashboard(location.pathname === "/consumption");
   return {
     data: consumption.data?.forecastComparison || [],
     forecastCutoffDate: consumption.data?.forecastCutoffDate,

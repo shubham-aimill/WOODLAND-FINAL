@@ -7,7 +7,7 @@ import { useFilters } from "@/contexts/FilterContext";
 
 const PAGE_TITLES: Record<string, string> = {
   "/": "AI Command Center",
-  "/sales": "AI Command Center",
+  "/consumption": "AI Command Center",
 };
 
 export const TopNavigation = () => {
@@ -27,8 +27,8 @@ export const TopNavigation = () => {
   }, []);
 
   const navItems = [
-    { path: "/", label: "Consumption Forecasting" },
-    { path: "/sales", label: "Sales Forecasting" },
+    { path: "/", label: "Sales Forecasting" },
+    { path: "/consumption", label: "Consumption Forecasting" },
   ];
 
   return (

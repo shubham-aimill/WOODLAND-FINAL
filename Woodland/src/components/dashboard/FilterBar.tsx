@@ -316,10 +316,8 @@ interface FilterMetadata {
 /* =========================
    FETCH FILTER METADATA
 ========================= */
-const BACKEND_URL = 'https://woodland-backend.onrender.com/api';
-
 async function fetchFilterMetadata(): Promise<FilterMetadata> {
-  const res = await fetch(`${BACKEND_URL}/filters`);
+  const res = await fetch("/api/filters");
   if (!res.ok) throw new Error("Failed to load filters");
   return res.json();
 }
@@ -372,8 +370,8 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
     }
 
     if (dashboard === "consumption" && filters.product && filters.product !== "all") {
-      const url = `${BACKEND_URL}/filters/rawMaterials?product=${encodeURIComponent(filters.product)}`;
-
+      const url = `/api/filters/rawMaterials?product=${encodeURIComponent(filters.product)}`;
+      
       fetch(url)
         .then(res => res.json())
         .then(data => {
@@ -400,8 +398,8 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
 
     if (dashboard === "sales") {
       if (filters.category && filters.category !== "all") {
-        const url = `${BACKEND_URL}/filters/skus?category=${encodeURIComponent(filters.category)}`;
-
+        const url = `/api/filters/skus?category=${encodeURIComponent(filters.category)}`;
+        
         fetch(url)
           .then(res => res.json())
           .then(data => {
@@ -432,8 +430,8 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
 
     if (dashboard === "sales") {
       if (filters.sku && filters.sku !== "all") {
-        const url = `${BACKEND_URL}/filters/stores?sku=${encodeURIComponent(filters.sku)}`;
-
+        const url = `/api/filters/stores?sku=${encodeURIComponent(filters.sku)}`;
+        
         fetch(url)
           .then(res => res.json())
           .then(data => {
@@ -458,47 +456,31 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
 
   // Reset raw material ONLY when product changes (not when raw material is manually selected)
   const prevProductRef = useRef<string | undefined>(undefined);
-
+  
   useEffect(() => {
     // Skip on initial mount
     if (prevProductRef.current === undefined) {
       prevProductRef.current = filters.product;
       return;
     }
-
+    
     // Only reset if product actually changed AND raw material is not valid for new product
-    if (
-      dashboard === 'consumption' &&
-      filters.product &&
-      filters.product !== 'all' &&
-      filters.rawMaterial !== 'all' &&
-      dynamicRawMaterials.length > 1 &&
-      prevProductRef.current !== filters.product &&
-      prevProductRef.current !== undefined
-    ) {
+    if (dashboard === "consumption" && 
+        filters.product && 
+        filters.product !== "all" && 
+        filters.rawMaterial !== "all" &&
+        dynamicRawMaterials.length > 1 &&
+        prevProductRef.current !== filters.product &&
+        prevProductRef.current !== undefined) {
       // Check if current raw material is in the filtered list (excluding "all")
       const validRawMaterials = dynamicRawMaterials.slice(1); // Remove "all"
       if (!validRawMaterials.includes(filters.rawMaterial)) {
-        console.log(
-          '[FilterBar] Product changed from',
-          prevProductRef.current,
-          'to',
-          filters.product
-        );
-        console.log(
-          '[FilterBar] Current raw material',
-          filters.rawMaterial,
-          'not in valid raw materials:',
-          validRawMaterials
-        );
+        console.log("[FilterBar] Product changed from", prevProductRef.current, "to", filters.product);
+        console.log("[FilterBar] Current raw material", filters.rawMaterial, "not in valid raw materials:", validRawMaterials);
         console.log("[FilterBar] Resetting raw material to 'all'");
-        setRawMaterial('all');
+        setRawMaterial("all");
       } else {
-        console.log(
-          '[FilterBar] Product changed but raw material',
-          filters.rawMaterial,
-          'is still valid - keeping it'
-        );
+        console.log("[FilterBar] Product changed but raw material", filters.rawMaterial, "is still valid - keeping it");
       }
     }
     prevProductRef.current = filters.product;
@@ -506,47 +488,31 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
 
   // Reset SKU when category changes (for sales dashboard)
   const prevCategoryRef = useRef<string | undefined>(undefined);
-
+  
   useEffect(() => {
     // Skip on initial mount
     if (prevCategoryRef.current === undefined) {
       prevCategoryRef.current = filters.category;
       return;
     }
-
+    
     // Only reset if category actually changed AND SKU is not valid for new category
-    if (
-      dashboard === 'sales' &&
-      filters.category &&
-      filters.category !== 'all' &&
-      filters.sku !== 'all' &&
-      dynamicSkus.length > 1 &&
-      prevCategoryRef.current !== filters.category &&
-      prevCategoryRef.current !== undefined
-    ) {
+    if (dashboard === "sales" && 
+        filters.category && 
+        filters.category !== "all" && 
+        filters.sku !== "all" &&
+        dynamicSkus.length > 1 &&
+        prevCategoryRef.current !== filters.category &&
+        prevCategoryRef.current !== undefined) {
       // Check if current SKU is in the filtered list (excluding "all")
       const validSkus = dynamicSkus.slice(1); // Remove "all"
       if (!validSkus.includes(filters.sku)) {
-        console.log(
-          '[FilterBar] Category changed from',
-          prevCategoryRef.current,
-          'to',
-          filters.category
-        );
-        console.log(
-          '[FilterBar] Current SKU',
-          filters.sku,
-          'not in valid SKUs:',
-          validSkus
-        );
+        console.log("[FilterBar] Category changed from", prevCategoryRef.current, "to", filters.category);
+        console.log("[FilterBar] Current SKU", filters.sku, "not in valid SKUs:", validSkus);
         console.log("[FilterBar] Resetting SKU to 'all'");
-        setSku('all');
+        setSku("all");
       } else {
-        console.log(
-          '[FilterBar] Category changed but SKU',
-          filters.sku,
-          'is still valid - keeping it'
-        );
+        console.log("[FilterBar] Category changed but SKU", filters.sku, "is still valid - keeping it");
       }
     }
     prevCategoryRef.current = filters.category;
@@ -554,47 +520,31 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
 
   // Reset Store when SKU changes (for sales dashboard)
   const prevSkuRef = useRef<string | undefined>(undefined);
-
+  
   useEffect(() => {
     // Skip on initial mount
     if (prevSkuRef.current === undefined) {
       prevSkuRef.current = filters.sku;
       return;
     }
-
+    
     // Only reset if SKU actually changed AND store is not valid for new SKU
-    if (
-      dashboard === 'sales' &&
-      filters.sku &&
-      filters.sku !== 'all' &&
-      filters.store !== 'all' &&
-      dynamicStores.length > 1 &&
-      prevSkuRef.current !== filters.sku &&
-      prevSkuRef.current !== undefined
-    ) {
+    if (dashboard === "sales" && 
+        filters.sku && 
+        filters.sku !== "all" && 
+        filters.store !== "all" &&
+        dynamicStores.length > 1 &&
+        prevSkuRef.current !== filters.sku &&
+        prevSkuRef.current !== undefined) {
       // Check if current store is in the filtered list (excluding "all")
       const validStores = dynamicStores.slice(1); // Remove "all"
       if (!validStores.includes(filters.store)) {
-        console.log(
-          '[FilterBar] SKU changed from',
-          prevSkuRef.current,
-          'to',
-          filters.sku
-        );
-        console.log(
-          '[FilterBar] Current store',
-          filters.store,
-          'not in valid stores:',
-          validStores
-        );
+        console.log("[FilterBar] SKU changed from", prevSkuRef.current, "to", filters.sku);
+        console.log("[FilterBar] Current store", filters.store, "not in valid stores:", validStores);
         console.log("[FilterBar] Resetting store to 'all'");
-        setStore('all');
+        setStore("all");
       } else {
-        console.log(
-          '[FilterBar] SKU changed but store',
-          filters.store,
-          'is still valid - keeping it'
-        );
+        console.log("[FilterBar] SKU changed but store", filters.store, "is still valid - keeping it");
       }
     }
     prevSkuRef.current = filters.sku;
@@ -607,25 +557,24 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
   ========================= */
   const channels = ["all", ...(metadata?.channels ?? [])];
   // Use all products from metadata (no dynamic filtering based on raw material anymore)
-  const products = metadata?.products ? ['all', ...metadata.products] : ['all'];
+  const products = metadata?.products 
+    ? ["all", ...metadata.products]
+    : ["all"];
   // Use dynamic raw materials if available, otherwise fall back to metadata raw materials
   // If neither is available, show at least "all" option
-  const rawMaterials =
-    dynamicRawMaterials.length > 1
-      ? dynamicRawMaterials
-      : metadata?.rawMaterials
-        ? ['all', ...metadata.rawMaterials]
-        : ['all'];
+  const rawMaterials = dynamicRawMaterials.length > 1 
+    ? dynamicRawMaterials 
+    : metadata?.rawMaterials 
+      ? ["all", ...metadata.rawMaterials]
+      : ["all"];
   // For sales dashboard: use dynamic stores and SKUs based on cascading filters
   // For consumption dashboard: use all stores and SKUs from metadata
-  const stores =
-    dashboard === 'sales' && dynamicStores.length > 1
-      ? dynamicStores
-      : ['all', ...(metadata?.stores ?? [])];
-  const skus =
-    dashboard === 'sales' && dynamicSkus.length > 1
-      ? dynamicSkus
-      : ['all', ...(metadata?.skus ?? [])];
+  const stores = dashboard === "sales" && dynamicStores.length > 1 
+    ? dynamicStores 
+    : ["all", ...(metadata?.stores ?? [])];
+  const skus = dashboard === "sales" && dynamicSkus.length > 1 
+    ? dynamicSkus 
+    : ["all", ...(metadata?.skus ?? [])];
   const categories = ["all", ...(metadata?.categories ?? [])];
 
 
@@ -636,17 +585,15 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
     <div className="sticky top-[72px] z-40 bg-background/95 backdrop-blur-sm border-b border-border/50 py-4">
       <div className="px-6 max-w-[1920px] mx-auto">
         <div className="flex flex-wrap items-center gap-3">
+
           {/* ================= FORECAST HORIZON ================= */}
           {/* Forecast horizon: Next 7 or 30 days from cutoff date */}
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
               <Calendar className="w-4 h-4 text-primary" />
             </div>
-            <Select
-              value={filters.dateRange}
-              onValueChange={v => setDateRange(v as DateRange)}
-            >
-              <SelectTrigger className={cn(filterClass, 'w-[180px]')}>
+            <Select value={filters.dateRange} onValueChange={(v) => setDateRange(v as DateRange)}>
+              <SelectTrigger className={cn(filterClass, "w-[180px]")}>
                 <SelectValue placeholder="Forecast Horizon" />
               </SelectTrigger>
               <SelectContent>
@@ -662,13 +609,13 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
               <Building2 className="w-4 h-4 text-primary" />
             </div>
             <Select value={filters.channel} onValueChange={setChannel}>
-              <SelectTrigger className={cn(filterClass, 'w-[150px]')}>
+              <SelectTrigger className={cn(filterClass, "w-[150px]")}>
                 <SelectValue placeholder="Channel" />
               </SelectTrigger>
               <SelectContent>
-                {channels.map(c => (
+                {channels.map((c) => (
                   <SelectItem key={c} value={c}>
-                    {c === 'all' ? 'All Channels' : c}
+                    {c === "all" ? "All Channels" : c}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -682,26 +629,23 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
                 <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                   <Package className="w-4 h-4 text-primary" />
                 </div>
-                <Select
-                  value={filters.product}
-                  onValueChange={value => {
+                <Select 
+                  value={filters.product} 
+                  onValueChange={(value) => {
                     // Always set the product - this will trigger raw material filtering
                     setProduct(value);
                   }}
                 >
-                  <SelectTrigger className={cn(filterClass, 'w-[160px]')}>
+                  <SelectTrigger className={cn(filterClass, "w-[160px]")}>
                     <SelectValue placeholder="Product" />
                   </SelectTrigger>
                   <SelectContent>
-                    {products.length === 0 ||
-                    (products.length === 1 && products[0] === 'all') ? (
-                      <SelectItem value="all" disabled>
-                        Loading...
-                      </SelectItem>
+                    {products.length === 0 || (products.length === 1 && products[0] === "all") ? (
+                      <SelectItem value="all" disabled>Loading...</SelectItem>
                     ) : (
-                      products.map(p => (
+                      products.map((p) => (
                         <SelectItem key={p} value={p}>
-                          {p === 'all' ? 'All Products' : p}
+                          {p === "all" ? "All Products" : p}
                         </SelectItem>
                       ))
                     )}
@@ -714,31 +658,24 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
                 <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                   <Layers className="w-4 h-4 text-primary" />
                 </div>
-                <Select
-                  value={filters.rawMaterial}
-                  onValueChange={setRawMaterial}
-                >
-                  <SelectTrigger className={cn(filterClass, 'w-[180px]')}>
+                <Select value={filters.rawMaterial} onValueChange={setRawMaterial}>
+                  <SelectTrigger className={cn(filterClass, "w-[180px]")}>
                     <SelectValue placeholder="Raw Material" />
                   </SelectTrigger>
                   <SelectContent>
-                    {rawMaterials.length === 0 ||
-                    (rawMaterials.length === 1 && rawMaterials[0] === 'all') ? (
-                      <SelectItem value="all" disabled>
-                        Loading...
-                      </SelectItem>
+                    {rawMaterials.length === 0 || (rawMaterials.length === 1 && rawMaterials[0] === "all") ? (
+                      <SelectItem value="all" disabled>Loading...</SelectItem>
                     ) : (
-                      rawMaterials.map(rm => (
+                      rawMaterials.map((rm) => (
                         <SelectItem key={rm} value={rm}>
-                          {rm === 'all'
-                            ? 'All Raw Materials'
-                            : rm.replace(/_/g, ' ')}
+                          {rm === "all" ? "All Raw Materials" : rm.replace(/_/g, " ")}
                         </SelectItem>
                       ))
                     )}
                   </SelectContent>
                 </Select>
               </div>
+
             </>
           ) : (
             <>
@@ -747,20 +684,20 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
                 <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                   <Tag className="w-4 h-4 text-primary" />
                 </div>
-                <Select
-                  value={filters.category}
-                  onValueChange={value => {
+                <Select 
+                  value={filters.category} 
+                  onValueChange={(value) => {
                     setCategory(value);
                     // Category change will trigger SKU filtering via useEffect
                   }}
                 >
-                  <SelectTrigger className={cn(filterClass, 'w-[150px]')}>
+                  <SelectTrigger className={cn(filterClass, "w-[150px]")}>
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map(c => (
+                    {categories.map((c) => (
                       <SelectItem key={c} value={c}>
-                        {c === 'all' ? 'All Categories' : c}
+                        {c === "all" ? "All Categories" : c}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -772,26 +709,23 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
                 <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                   <Package className="w-4 h-4 text-primary" />
                 </div>
-                <Select
-                  value={filters.sku}
-                  onValueChange={value => {
+                <Select 
+                  value={filters.sku} 
+                  onValueChange={(value) => {
                     setSku(value);
                     // SKU change will trigger Store filtering via useEffect
                   }}
                 >
-                  <SelectTrigger className={cn(filterClass, 'w-[150px]')}>
+                  <SelectTrigger className={cn(filterClass, "w-[150px]")}>
                     <SelectValue placeholder="SKU" />
                   </SelectTrigger>
                   <SelectContent>
-                    {skus.length === 0 ||
-                    (skus.length === 1 && skus[0] === 'all') ? (
-                      <SelectItem value="all" disabled>
-                        Loading...
-                      </SelectItem>
+                    {skus.length === 0 || (skus.length === 1 && skus[0] === "all") ? (
+                      <SelectItem value="all" disabled>Loading...</SelectItem>
                     ) : (
-                      skus.map(sku => (
+                      skus.map((sku) => (
                         <SelectItem key={sku} value={sku}>
-                          {sku === 'all' ? 'All SKUs' : sku}
+                          {sku === "all" ? "All SKUs" : sku}
                         </SelectItem>
                       ))
                     )}
@@ -805,19 +739,16 @@ export const FilterBar = ({ dashboard }: FilterBarProps) => {
                   <Store className="w-4 h-4 text-primary" />
                 </div>
                 <Select value={filters.store} onValueChange={setStore}>
-                  <SelectTrigger className={cn(filterClass, 'w-[150px]')}>
+                  <SelectTrigger className={cn(filterClass, "w-[150px]")}>
                     <SelectValue placeholder="Store" />
                   </SelectTrigger>
                   <SelectContent>
-                    {stores.length === 0 ||
-                    (stores.length === 1 && stores[0] === 'all') ? (
-                      <SelectItem value="all" disabled>
-                        Loading...
-                      </SelectItem>
+                    {stores.length === 0 || (stores.length === 1 && stores[0] === "all") ? (
+                      <SelectItem value="all" disabled>Loading...</SelectItem>
                     ) : (
-                      stores.map(s => (
+                      stores.map((s) => (
                         <SelectItem key={s} value={s}>
-                          {s === 'all' ? 'All Stores' : s}
+                          {s === "all" ? "All Stores" : s}
                         </SelectItem>
                       ))
                     )}

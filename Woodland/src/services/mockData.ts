@@ -57,7 +57,7 @@ export async function mockSalesKPIs(filters: FilterState): Promise<SalesKPIData>
   return {
     skuForecastAccuracy: { value: 91.8, trend: 1.4, direction: "up" },
     totalForecastedUnits: { value: v(18420), trend: 12.3, direction: "up" },
-    forecastBias: { value: -1.8, trend: 0.3, direction: "up" },
+    baselineSales: { value: v(17250), trend: 8.5, direction: "up" },
     demandVolatilityIndex: { value: 14.2, trend: 3.1, direction: "down" },
     highRiskSKUsCount: { value: filters.store === "all" ? 4 : 1, trend: 2, direction: "down" },
   };
