@@ -74,7 +74,7 @@ CORS(app, resources={
             "http://localhost:5173",
             "http://127.0.0.1:5173",
             "http://localhost:3000",
-            "*"
+            "https://woodland-final-lxcg.onrender.com"
         ],
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"]
@@ -1997,18 +1997,12 @@ def health_check():
 
 
 # =========================================================
-if __name__ == "__main__":
-    print("=" * 60)
-    print("Woodland Forecast API Server")
-    print("=" * 60)
-    print(f"  API running at: http://localhost:5051")
-    print(f"  Frontend dist:  {'Found' if os.path.exists(WOODLAND_DIST_DIR) else 'Not built'}")
-    print("")
-    print("  Endpoints:")
-    print("    /api/consumption/dashboard")
-    print("    /api/sales/dashboard")
-    print("    /api/filters")
-    print("    /api/health")
-    print("=" * 60)
-    app.run(debug=True, use_reloader=False, port=5052)
+if __name__ == "_main_":
+    port = int(os.environ.get("PORT", 5051))
+
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=False
+    )
 

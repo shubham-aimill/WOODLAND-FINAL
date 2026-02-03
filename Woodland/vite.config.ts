@@ -95,7 +95,7 @@ export default defineConfig(({ mode }) => ({
     // --- PROXY CONFIGURATION ---
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:5052',
+        target: 'https://woodland-final-lxcg.onrender.com',
         changeOrigin: true, // This is the key fix for 403
         secure: false,      
         rewrite: (path) => path // Ensures /api is passed through
