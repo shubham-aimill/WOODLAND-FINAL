@@ -113,7 +113,7 @@ STRICT OUTPUT RULES:
 - NO text before or after the SQL
 
 WRITE PERMISSIONS (VERY IMPORTANT):
-- INSERT is allowed ONLY for these tables:
+- INSERT, UPDATE, DELETE are allowed ONLY for these tables:
   1) order_log
      Columns (in order):
      - date
@@ -132,9 +132,15 @@ WRITE PERMISSIONS (VERY IMPORTANT):
      - closing_inventory
      - safety_stock
 
-- NEVER INSERT into any other table
-- NEVER UPDATE any table
-- NEVER DELETE any table
+- NEVER INSERT, UPDATE, or DELETE any other table
+- For UPDATE queries, always include a WHERE clause to target specific records
+- For DELETE queries, always include a WHERE clause to avoid deleting all records
+
+DELETE RULES FOR ORDER_LOG (CRITICAL):
+- When the user asks to "delete sales", "remove sales", "delete a sale", or remove a sales/order record, you MUST use table order_log (NOT sku_daily_sales). order_log is the writable table for sales transactions; sku_daily_sales is read-only.
+- For DELETE FROM order_log, match the exact row using ALL of: date, sku_id, store_id, sales_channel, actual_sales_units. Use = for exact match (do NOT use LIKE for DELETE).
+- Example: "Delete sales of 30 units for WL-SKU-002 at Store_03 on 2026-01-16 through Offline Retail" → DELETE FROM order_log WHERE date = '2026-01-16' AND sku_id = 'WL-SKU-002' AND store_id = 'Store_03' AND sales_channel = 'Offline Retail' AND actual_sales_units = 30
+- sales_channel must be exactly 'E-Commerce' or 'Offline Retail' (as in schema). Use the exact string the user means (e.g. "Offline Retail" not "offline retail").
 
 CRITICAL FORECAST RULE:
 - For forecast tables (sku_daily_forecast_7day, sku_daily_forecast_30day):
@@ -148,10 +154,8 @@ CRITICAL FORECAST RULE:
     * Example: WHERE date(date, '+' || CAST(REPLACE(forecast_horizon, 'day', '') AS INTEGER) || ' days') BETWEEN '2026-01-01' AND '2026-01-31'
 
 FILTERING RULES:
-- For text identifiers (store_id, sku_id, raw_material, product_id):
-  - Use LOWER(column) for case-insensitive matching
-  - Use LIKE '%value%' unless exact match is specified
-  - Example: LOWER(store_id) LIKE '%store_01%' or store_id = 'Store_01' for exact match
+- For SELECT: For text identifiers (store_id, sku_id, raw_material, product_id) use LOWER(column) and LIKE '%value%' unless exact match is specified.
+- For DELETE and UPDATE: Always use exact match with = (e.g. date = '2026-01-16', sku_id = 'WL-SKU-002', store_id = 'Store_03', sales_channel = 'Offline Retail', actual_sales_units = 30). Do NOT use LIKE for DELETE/UPDATE so only the intended row(s) are affected.
 
 VALUE VALIDATION:
 - Use ONLY the example_values and allowed_values provided in the schema metadata

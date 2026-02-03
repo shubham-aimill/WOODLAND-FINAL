@@ -1,212 +1,212 @@
 sku_id,product_id,variant,category
-WL-SKU-001,WL-PROD-101,Black_Size_42,Men Casual Shoes
-WL-SKU-001,WL-PROD-102,Black_Size_42,Men Casual Shoes
-WL-SKU-001,WL-PROD-103,Black_Size_42,Men Casual Shoes
-WL-SKU-001,WL-PROD-104,Black_Size_42,Men Casual Shoes
-WL-SKU-001,WL-PROD-105,Black_Size_42,Men Casual Shoes
+WL-SKU-001,WL-PROD-101,Black_Size_42,Casuals
+WL-SKU-001,WL-PROD-102,Black_Size_42,Casuals
+WL-SKU-001,WL-PROD-103,Black_Size_42,Casuals
+WL-SKU-001,WL-PROD-104,Black_Size_42,Casuals
+WL-SKU-001,WL-PROD-105,Black_Size_42,Casuals
 
-WL-SKU-002,WL-PROD-101,Brown_Size_41,Men Casual Shoes
-WL-SKU-002,WL-PROD-102,Brown_Size_41,Men Casual Shoes
-WL-SKU-002,WL-PROD-106,Brown_Size_41,Men Casual Shoes
-WL-SKU-002,WL-PROD-107,Brown_Size_41,Men Casual Shoes
-WL-SKU-002,WL-PROD-108,Brown_Size_41,Men Casual Shoes
-WL-SKU-002,WL-PROD-109,Brown_Size_41,Men Casual Shoes
+WL-SKU-002,WL-PROD-101,Brown_Size_41,Casuals
+WL-SKU-002,WL-PROD-102,Brown_Size_41,Casuals
+WL-SKU-002,WL-PROD-106,Brown_Size_41,Casuals
+WL-SKU-002,WL-PROD-107,Brown_Size_41,Casuals
+WL-SKU-002,WL-PROD-108,Brown_Size_41,Casuals
+WL-SKU-002,WL-PROD-109,Brown_Size_41,Casuals
 
-WL-SKU-003,WL-PROD-110,Black_Size_43,Men Outdoor Boots
-WL-SKU-003,WL-PROD-111,Black_Size_43,Men Outdoor Boots
-WL-SKU-003,WL-PROD-112,Black_Size_43,Men Outdoor Boots
-WL-SKU-003,WL-PROD-113,Black_Size_43,Men Outdoor Boots
+WL-SKU-003,WL-PROD-110,Black_Size_43,Boots
+WL-SKU-003,WL-PROD-111,Black_Size_43,Boots
+WL-SKU-003,WL-PROD-112,Black_Size_43,Boots
+WL-SKU-003,WL-PROD-113,Black_Size_43,Boots
 
-WL-SKU-004,WL-PROD-110,Brown_Size_42,Men Outdoor Boots
-WL-SKU-004,WL-PROD-111,Brown_Size_42,Men Outdoor Boots
-WL-SKU-004,WL-PROD-114,Brown_Size_42,Men Outdoor Boots
-WL-SKU-004,WL-PROD-115,Brown_Size_42,Men Outdoor Boots
-WL-SKU-004,WL-PROD-116,Brown_Size_42,Men Outdoor Boots
+WL-SKU-004,WL-PROD-110,Brown_Size_42,Boots
+WL-SKU-004,WL-PROD-111,Brown_Size_42,Boots
+WL-SKU-004,WL-PROD-114,Brown_Size_42,Boots
+WL-SKU-004,WL-PROD-115,Brown_Size_42,Boots
+WL-SKU-004,WL-PROD-116,Brown_Size_42,Boots
 
-WL-SKU-005,WL-PROD-120,Olive_Size_43,Men Trekking Shoes
-WL-SKU-005,WL-PROD-121,Olive_Size_43,Men Trekking Shoes
-WL-SKU-005,WL-PROD-122,Olive_Size_43,Men Trekking Shoes
-WL-SKU-005,WL-PROD-123,Olive_Size_43,Men Trekking Shoes
-WL-SKU-005,WL-PROD-124,Olive_Size_43,Men Trekking Shoes
-WL-SKU-005,WL-PROD-125,Olive_Size_43,Men Trekking Shoes
+WL-SKU-005,WL-PROD-120,Olive_Size_43,Boots
+WL-SKU-005,WL-PROD-121,Olive_Size_43,Boots
+WL-SKU-005,WL-PROD-122,Olive_Size_43,Boots
+WL-SKU-005,WL-PROD-123,Olive_Size_43,Boots
+WL-SKU-005,WL-PROD-124,Olive_Size_43,Boots
+WL-SKU-005,WL-PROD-125,Olive_Size_43,Boots
 
-WL-SKU-006,WL-PROD-120,Black_Size_42,Men Trekking Shoes
-WL-SKU-006,WL-PROD-121,Black_Size_42,Men Trekking Shoes
-WL-SKU-006,WL-PROD-122,Black_Size_42,Men Trekking Shoes
-WL-SKU-006,WL-PROD-126,Black_Size_42,Men Trekking Shoes
-WL-SKU-006,WL-PROD-127,Black_Size_42,Men Trekking Shoes
+WL-SKU-006,WL-PROD-120,Black_Size_42,Boots
+WL-SKU-006,WL-PROD-121,Black_Size_42,Boots
+WL-SKU-006,WL-PROD-122,Black_Size_42,Boots
+WL-SKU-006,WL-PROD-126,Black_Size_42,Boots
+WL-SKU-006,WL-PROD-127,Black_Size_42,Boots
 
-WL-SKU-007,WL-PROD-130,Tan_Size_42,Leather Sandals
-WL-SKU-007,WL-PROD-131,Tan_Size_42,Leather Sandals
-WL-SKU-007,WL-PROD-132,Tan_Size_42,Leather Sandals
-WL-SKU-007,WL-PROD-133,Tan_Size_42,Leather Sandals
+WL-SKU-007,WL-PROD-130,Tan_Size_42,Canvas
+WL-SKU-007,WL-PROD-131,Tan_Size_42,Canvas
+WL-SKU-007,WL-PROD-132,Tan_Size_42,Canvas
+WL-SKU-007,WL-PROD-133,Tan_Size_42,Canvas
 
-WL-SKU-008,WL-PROD-130,Black_Size_41,Leather Sandals
-WL-SKU-008,WL-PROD-131,Black_Size_41,Leather Sandals
-WL-SKU-008,WL-PROD-134,Black_Size_41,Leather Sandals
-WL-SKU-008,WL-PROD-135,Black_Size_41,Leather Sandals
-WL-SKU-008,WL-PROD-136,Black_Size_41,Leather Sandals
+WL-SKU-008,WL-PROD-130,Black_Size_41,Canvas
+WL-SKU-008,WL-PROD-131,Black_Size_41,Canvas
+WL-SKU-008,WL-PROD-134,Black_Size_41,Canvas
+WL-SKU-008,WL-PROD-135,Black_Size_41,Canvas
+WL-SKU-008,WL-PROD-136,Black_Size_41,Canvas
 
-WL-SKU-009,WL-PROD-140,Brown_Size_42,Leather Belts & Wallets
-WL-SKU-009,WL-PROD-141,Brown_Size_42,Leather Belts & Wallets
-WL-SKU-009,WL-PROD-142,Brown_Size_42,Leather Belts & Wallets
-WL-SKU-009,WL-PROD-143,Brown_Size_42,Leather Belts & Wallets
+WL-SKU-009,WL-PROD-140,Brown_Size_42,Belts & More
+WL-SKU-009,WL-PROD-141,Brown_Size_42,Belts & More
+WL-SKU-009,WL-PROD-142,Brown_Size_42,Belts & More
+WL-SKU-009,WL-PROD-143,Brown_Size_42,Belts & More
 
-WL-SKU-010,WL-PROD-140,Black_Size_42,Leather Belts & Wallets
-WL-SKU-010,WL-PROD-141,Black_Size_42,Leather Belts & Wallets
-WL-SKU-010,WL-PROD-144,Black_Size_42,Leather Belts & Wallets
-WL-SKU-010,WL-PROD-145,Black_Size_42,Leather Belts & Wallets
-WL-SKU-010,WL-PROD-146,Black_Size_42,Leather Belts & Wallets
+WL-SKU-010,WL-PROD-140,Black_Size_42,Belts & More
+WL-SKU-010,WL-PROD-141,Black_Size_42,Belts & More
+WL-SKU-010,WL-PROD-144,Black_Size_42,Belts & More
+WL-SKU-010,WL-PROD-145,Black_Size_42,Belts & More
+WL-SKU-010,WL-PROD-146,Black_Size_42,Belts & More
 
-WL-SKU-011,WL-PROD-150,Black_Size_41,Men Casual Shoes
-WL-SKU-011,WL-PROD-151,Black_Size_41,Men Casual Shoes
-WL-SKU-011,WL-PROD-152,Black_Size_41,Men Casual Shoes
-WL-SKU-011,WL-PROD-153,Black_Size_41,Men Casual Shoes
-WL-SKU-011,WL-PROD-154,Black_Size_41,Men Casual Shoes
+WL-SKU-011,WL-PROD-150,Black_Size_41,Casuals
+WL-SKU-011,WL-PROD-151,Black_Size_41,Casuals
+WL-SKU-011,WL-PROD-152,Black_Size_41,Casuals
+WL-SKU-011,WL-PROD-153,Black_Size_41,Casuals
+WL-SKU-011,WL-PROD-154,Black_Size_41,Casuals
 
-WL-SKU-012,WL-PROD-150,Brown_Size_42,Men Casual Shoes
-WL-SKU-012,WL-PROD-151,Brown_Size_42,Men Casual Shoes
-WL-SKU-012,WL-PROD-155,Brown_Size_42,Men Casual Shoes
-WL-SKU-012,WL-PROD-156,Brown_Size_42,Men Casual Shoes
+WL-SKU-012,WL-PROD-150,Brown_Size_42,Casuals
+WL-SKU-012,WL-PROD-151,Brown_Size_42,Casuals
+WL-SKU-012,WL-PROD-155,Brown_Size_42,Casuals
+WL-SKU-012,WL-PROD-156,Brown_Size_42,Casuals
 
-WL-SKU-013,WL-PROD-160,Black_Size_43,Men Outdoor Boots
-WL-SKU-013,WL-PROD-161,Black_Size_43,Men Outdoor Boots
-WL-SKU-013,WL-PROD-162,Black_Size_43,Men Outdoor Boots
-WL-SKU-013,WL-PROD-163,Black_Size_43,Men Outdoor Boots
-WL-SKU-013,WL-PROD-164,Black_Size_43,Men Outdoor Boots
+WL-SKU-013,WL-PROD-160,Black_Size_43,Boots
+WL-SKU-013,WL-PROD-161,Black_Size_43,Boots
+WL-SKU-013,WL-PROD-162,Black_Size_43,Boots
+WL-SKU-013,WL-PROD-163,Black_Size_43,Boots
+WL-SKU-013,WL-PROD-164,Black_Size_43,Boots
 
-WL-SKU-014,WL-PROD-160,Brown_Size_42,Men Outdoor Boots
-WL-SKU-014,WL-PROD-161,Brown_Size_42,Men Outdoor Boots
-WL-SKU-014,WL-PROD-165,Brown_Size_42,Men Outdoor Boots
-WL-SKU-014,WL-PROD-166,Brown_Size_42,Men Outdoor Boots
+WL-SKU-014,WL-PROD-160,Brown_Size_42,Boots
+WL-SKU-014,WL-PROD-161,Brown_Size_42,Boots
+WL-SKU-014,WL-PROD-165,Brown_Size_42,Boots
+WL-SKU-014,WL-PROD-166,Brown_Size_42,Boots
 
-WL-SKU-015,WL-PROD-170,Olive_Size_43,Men Trekking Shoes
-WL-SKU-015,WL-PROD-171,Olive_Size_43,Men Trekking Shoes
-WL-SKU-015,WL-PROD-172,Olive_Size_43,Men Trekking Shoes
-WL-SKU-015,WL-PROD-173,Olive_Size_43,Men Trekking Shoes
-WL-SKU-015,WL-PROD-174,Olive_Size_43,Men Trekking Shoes
+WL-SKU-015,WL-PROD-170,Olive_Size_43,Boots
+WL-SKU-015,WL-PROD-171,Olive_Size_43,Boots
+WL-SKU-015,WL-PROD-172,Olive_Size_43,Boots
+WL-SKU-015,WL-PROD-173,Olive_Size_43,Boots
+WL-SKU-015,WL-PROD-174,Olive_Size_43,Boots
 
-WL-SKU-016,WL-PROD-170,Black_Size_42,Men Trekking Shoes
-WL-SKU-016,WL-PROD-171,Black_Size_42,Men Trekking Shoes
-WL-SKU-016,WL-PROD-175,Black_Size_42,Men Trekking Shoes
-WL-SKU-016,WL-PROD-176,Black_Size_42,Men Trekking Shoes
+WL-SKU-016,WL-PROD-170,Black_Size_42,Boots
+WL-SKU-016,WL-PROD-171,Black_Size_42,Boots
+WL-SKU-016,WL-PROD-175,Black_Size_42,Boots
+WL-SKU-016,WL-PROD-176,Black_Size_42,Boots
 
-WL-SKU-017,WL-PROD-180,Tan_Size_42,Leather Sandals
-WL-SKU-017,WL-PROD-181,Tan_Size_42,Leather Sandals
-WL-SKU-017,WL-PROD-182,Tan_Size_42,Leather Sandals
-WL-SKU-017,WL-PROD-183,Tan_Size_42,Leather Sandals
+WL-SKU-017,WL-PROD-180,Tan_Size_42,Canvas
+WL-SKU-017,WL-PROD-181,Tan_Size_42,Canvas
+WL-SKU-017,WL-PROD-182,Tan_Size_42,Canvas
+WL-SKU-017,WL-PROD-183,Tan_Size_42,Canvas
 
-WL-SKU-018,WL-PROD-180,Black_Size_41,Leather Sandals
-WL-SKU-018,WL-PROD-181,Black_Size_41,Leather Sandals
-WL-SKU-018,WL-PROD-184,Black_Size_41,Leather Sandals
-WL-SKU-018,WL-PROD-185,Black_Size_41,Leather Sandals
+WL-SKU-018,WL-PROD-180,Black_Size_41,Canvas
+WL-SKU-018,WL-PROD-181,Black_Size_41,Canvas
+WL-SKU-018,WL-PROD-184,Black_Size_41,Canvas
+WL-SKU-018,WL-PROD-185,Black_Size_41,Canvas
 
-WL-SKU-019,WL-PROD-190,Brown_Size_42,Leather Accessories
-WL-SKU-019,WL-PROD-191,Brown_Size_42,Leather Accessories
-WL-SKU-019,WL-PROD-192,Brown_Size_42,Leather Accessories
-WL-SKU-019,WL-PROD-193,Brown_Size_42,Leather Accessories
+WL-SKU-019,WL-PROD-190,Brown_Size_42,Bags
+WL-SKU-019,WL-PROD-191,Brown_Size_42,Bags
+WL-SKU-019,WL-PROD-192,Brown_Size_42,Bags
+WL-SKU-019,WL-PROD-193,Brown_Size_42,Bags
 
-WL-SKU-020,WL-PROD-190,Black_Size_42,Leather Accessories
-WL-SKU-020,WL-PROD-191,Black_Size_42,Leather Accessories
-WL-SKU-020,WL-PROD-194,Black_Size_42,Leather Accessories
-WL-SKU-020,WL-PROD-195,Black_Size_42,Leather Accessories
+WL-SKU-020,WL-PROD-190,Black_Size_42,Bags
+WL-SKU-020,WL-PROD-191,Black_Size_42,Bags
+WL-SKU-020,WL-PROD-194,Black_Size_42,Bags
+WL-SKU-020,WL-PROD-195,Black_Size_42,Bags
 
-WL-SKU-021,WL-PROD-200,Black_Size_42,Men Casual Shoes
-WL-SKU-021,WL-PROD-201,Black_Size_42,Men Casual Shoes
-WL-SKU-021,WL-PROD-202,Black_Size_42,Men Casual Shoes
-WL-SKU-021,WL-PROD-203,Black_Size_42,Men Casual Shoes
+WL-SKU-021,WL-PROD-200,Black_Size_42,Casuals
+WL-SKU-021,WL-PROD-201,Black_Size_42,Casuals
+WL-SKU-021,WL-PROD-202,Black_Size_42,Casuals
+WL-SKU-021,WL-PROD-203,Black_Size_42,Casuals
 
-WL-SKU-022,WL-PROD-200,Brown_Size_41,Men Casual Shoes
-WL-SKU-022,WL-PROD-201,Brown_Size_41,Men Casual Shoes
-WL-SKU-022,WL-PROD-204,Brown_Size_41,Men Casual Shoes
-WL-SKU-022,WL-PROD-205,Brown_Size_41,Men Casual Shoes
+WL-SKU-022,WL-PROD-200,Brown_Size_41,Casuals
+WL-SKU-022,WL-PROD-201,Brown_Size_41,Casuals
+WL-SKU-022,WL-PROD-204,Brown_Size_41,Casuals
+WL-SKU-022,WL-PROD-205,Brown_Size_41,Casuals
 
-WL-SKU-023,WL-PROD-210,Black_Size_43,Men Outdoor Boots
-WL-SKU-023,WL-PROD-211,Black_Size_43,Men Outdoor Boots
-WL-SKU-023,WL-PROD-212,Black_Size_43,Men Outdoor Boots
-WL-SKU-023,WL-PROD-213,Black_Size_43,Men Outdoor Boots
+WL-SKU-023,WL-PROD-210,Black_Size_43,Boots
+WL-SKU-023,WL-PROD-211,Black_Size_43,Boots
+WL-SKU-023,WL-PROD-212,Black_Size_43,Boots
+WL-SKU-023,WL-PROD-213,Black_Size_43,Boots
 
-WL-SKU-024,WL-PROD-210,Brown_Size_42,Men Outdoor Boots
-WL-SKU-024,WL-PROD-211,Brown_Size_42,Men Outdoor Boots
-WL-SKU-024,WL-PROD-214,Brown_Size_42,Men Outdoor Boots
-WL-SKU-024,WL-PROD-215,Brown_Size_42,Men Outdoor Boots
+WL-SKU-024,WL-PROD-210,Brown_Size_42,Boots
+WL-SKU-024,WL-PROD-211,Brown_Size_42,Boots
+WL-SKU-024,WL-PROD-214,Brown_Size_42,Boots
+WL-SKU-024,WL-PROD-215,Brown_Size_42,Boots
 
-WL-SKU-025,WL-PROD-220,Olive_Size_43,Men Trekking Shoes
-WL-SKU-025,WL-PROD-221,Olive_Size_43,Men Trekking Shoes
-WL-SKU-025,WL-PROD-222,Olive_Size_43,Men Trekking Shoes
-WL-SKU-025,WL-PROD-223,Olive_Size_43,Men Trekking Shoes
+WL-SKU-025,WL-PROD-220,Olive_Size_43,Boots
+WL-SKU-025,WL-PROD-221,Olive_Size_43,Boots
+WL-SKU-025,WL-PROD-222,Olive_Size_43,Boots
+WL-SKU-025,WL-PROD-223,Olive_Size_43,Boots
 
-WL-SKU-026,WL-PROD-220,Black_Size_42,Men Trekking Shoes
-WL-SKU-026,WL-PROD-221,Black_Size_42,Men Trekking Shoes
-WL-SKU-026,WL-PROD-224,Black_Size_42,Men Trekking Shoes
-WL-SKU-026,WL-PROD-225,Black_Size_42,Men Trekking Shoes
+WL-SKU-026,WL-PROD-220,Black_Size_42,Boots
+WL-SKU-026,WL-PROD-221,Black_Size_42,Boots
+WL-SKU-026,WL-PROD-224,Black_Size_42,Boots
+WL-SKU-026,WL-PROD-225,Black_Size_42,Boots
 
-WL-SKU-027,WL-PROD-230,Tan_Size_42,Leather Sandals
-WL-SKU-027,WL-PROD-231,Tan_Size_42,Leather Sandals
-WL-SKU-027,WL-PROD-232,Tan_Size_42,Leather Sandals
-WL-SKU-027,WL-PROD-233,Tan_Size_42,Leather Sandals
+WL-SKU-027,WL-PROD-230,Tan_Size_42,Canvas
+WL-SKU-027,WL-PROD-231,Tan_Size_42,Canvas
+WL-SKU-027,WL-PROD-232,Tan_Size_42,Canvas
+WL-SKU-027,WL-PROD-233,Tan_Size_42,Canvas
 
-WL-SKU-028,WL-PROD-230,Black_Size_41,Leather Sandals
-WL-SKU-028,WL-PROD-231,Black_Size_41,Leather Sandals
-WL-SKU-028,WL-PROD-234,Black_Size_41,Leather Sandals
-WL-SKU-028,WL-PROD-235,Black_Size_41,Leather Sandals
+WL-SKU-028,WL-PROD-230,Black_Size_41,Canvas
+WL-SKU-028,WL-PROD-231,Black_Size_41,Canvas
+WL-SKU-028,WL-PROD-234,Black_Size_41,Canvas
+WL-SKU-028,WL-PROD-235,Black_Size_41,Canvas
 
-WL-SKU-029,WL-PROD-240,Brown_Size_42,Leather Accessories
-WL-SKU-029,WL-PROD-241,Brown_Size_42,Leather Accessories
-WL-SKU-029,WL-PROD-242,Brown_Size_42,Leather Accessories
-WL-SKU-029,WL-PROD-243,Brown_Size_42,Leather Accessories
+WL-SKU-029,WL-PROD-240,Brown_Size_42,Bags
+WL-SKU-029,WL-PROD-241,Brown_Size_42,Bags
+WL-SKU-029,WL-PROD-242,Brown_Size_42,Bags
+WL-SKU-029,WL-PROD-243,Brown_Size_42,Bags
 
-WL-SKU-030,WL-PROD-240,Black_Size_42,Leather Accessories
-WL-SKU-030,WL-PROD-241,Black_Size_42,Leather Accessories
-WL-SKU-030,WL-PROD-244,Black_Size_42,Leather Accessories
-WL-SKU-030,WL-PROD-245,Black_Size_42,Leather Accessories
+WL-SKU-030,WL-PROD-240,Black_Size_42,Bags
+WL-SKU-030,WL-PROD-241,Black_Size_42,Bags
+WL-SKU-030,WL-PROD-244,Black_Size_42,Bags
+WL-SKU-030,WL-PROD-245,Black_Size_42,Bags
 
-WL-SKU-031,WL-PROD-250,Black_Size_42,Men Casual Shoes
-WL-SKU-031,WL-PROD-251,Black_Size_42,Men Casual Shoes
-WL-SKU-031,WL-PROD-252,Black_Size_42,Men Casual Shoes
-WL-SKU-031,WL-PROD-253,Black_Size_42,Men Casual Shoes
+WL-SKU-031,WL-PROD-250,Black_Size_42,Casuals
+WL-SKU-031,WL-PROD-251,Black_Size_42,Casuals
+WL-SKU-031,WL-PROD-252,Black_Size_42,Casuals
+WL-SKU-031,WL-PROD-253,Black_Size_42,Casuals
 
-WL-SKU-032,WL-PROD-250,Brown_Size_41,Men Casual Shoes
-WL-SKU-032,WL-PROD-251,Brown_Size_41,Men Casual Shoes
-WL-SKU-032,WL-PROD-254,Brown_Size_41,Men Casual Shoes
-WL-SKU-032,WL-PROD-255,Brown_Size_41,Men Casual Shoes
+WL-SKU-032,WL-PROD-250,Brown_Size_41,Casuals
+WL-SKU-032,WL-PROD-251,Brown_Size_41,Casuals
+WL-SKU-032,WL-PROD-254,Brown_Size_41,Casuals
+WL-SKU-032,WL-PROD-255,Brown_Size_41,Casuals
 
-WL-SKU-033,WL-PROD-260,Black_Size_43,Men Outdoor Boots
-WL-SKU-033,WL-PROD-261,Black_Size_43,Men Outdoor Boots
-WL-SKU-033,WL-PROD-262,Black_Size_43,Men Outdoor Boots
-WL-SKU-033,WL-PROD-263,Black_Size_43,Men Outdoor Boots
+WL-SKU-033,WL-PROD-260,Black_Size_43,Boots
+WL-SKU-033,WL-PROD-261,Black_Size_43,Boots
+WL-SKU-033,WL-PROD-262,Black_Size_43,Boots
+WL-SKU-033,WL-PROD-263,Black_Size_43,Boots
 
-WL-SKU-034,WL-PROD-260,Brown_Size_42,Men Outdoor Boots
-WL-SKU-034,WL-PROD-261,Brown_Size_42,Men Outdoor Boots
-WL-SKU-034,WL-PROD-264,Brown_Size_42,Men Outdoor Boots
-WL-SKU-034,WL-PROD-265,Brown_Size_42,Men Outdoor Boots
+WL-SKU-034,WL-PROD-260,Brown_Size_42,Boots
+WL-SKU-034,WL-PROD-261,Brown_Size_42,Boots
+WL-SKU-034,WL-PROD-264,Brown_Size_42,Boots
+WL-SKU-034,WL-PROD-265,Brown_Size_42,Boots
 
-WL-SKU-035,WL-PROD-270,Olive_Size_43,Men Trekking Shoes
-WL-SKU-035,WL-PROD-271,Olive_Size_43,Men Trekking Shoes
-WL-SKU-035,WL-PROD-272,Olive_Size_43,Men Trekking Shoes
-WL-SKU-035,WL-PROD-273,Olive_Size_43,Men Trekking Shoes
+WL-SKU-035,WL-PROD-270,Olive_Size_43,Boots
+WL-SKU-035,WL-PROD-271,Olive_Size_43,Boots
+WL-SKU-035,WL-PROD-272,Olive_Size_43,Boots
+WL-SKU-035,WL-PROD-273,Olive_Size_43,Boots
 
-WL-SKU-036,WL-PROD-270,Black_Size_42,Men Trekking Shoes
-WL-SKU-036,WL-PROD-271,Black_Size_42,Men Trekking Shoes
-WL-SKU-036,WL-PROD-274,Black_Size_42,Men Trekking Shoes
-WL-SKU-036,WL-PROD-275,Black_Size_42,Men Trekking Shoes
+WL-SKU-036,WL-PROD-270,Black_Size_42,Boots
+WL-SKU-036,WL-PROD-271,Black_Size_42,Boots
+WL-SKU-036,WL-PROD-274,Black_Size_42,Boots
+WL-SKU-036,WL-PROD-275,Black_Size_42,Boots
 
-WL-SKU-037,WL-PROD-280,Tan_Size_42,Leather Sandals
-WL-SKU-037,WL-PROD-281,Tan_Size_42,Leather Sandals
-WL-SKU-037,WL-PROD-282,Tan_Size_42,Leather Sandals
-WL-SKU-037,WL-PROD-283,Tan_Size_42,Leather Sandals
+WL-SKU-037,WL-PROD-280,Tan_Size_42,Canvas
+WL-SKU-037,WL-PROD-281,Tan_Size_42,Canvas
+WL-SKU-037,WL-PROD-282,Tan_Size_42,Canvas
+WL-SKU-037,WL-PROD-283,Tan_Size_42,Canvas
 
-WL-SKU-038,WL-PROD-280,Black_Size_41,Leather Sandals
-WL-SKU-038,WL-PROD-281,Black_Size_41,Leather Sandals
-WL-SKU-038,WL-PROD-284,Black_Size_41,Leather Sandals
-WL-SKU-038,WL-PROD-285,Black_Size_41,Leather Sandals
+WL-SKU-038,WL-PROD-280,Black_Size_41,Canvas
+WL-SKU-038,WL-PROD-281,Black_Size_41,Canvas
+WL-SKU-038,WL-PROD-284,Black_Size_41,Canvas
+WL-SKU-038,WL-PROD-285,Black_Size_41,Canvas
 
-WL-SKU-039,WL-PROD-290,Brown_Size_42,Leather Accessories
-WL-SKU-039,WL-PROD-291,Brown_Size_42,Leather Accessories
-WL-SKU-039,WL-PROD-292,Brown_Size_42,Leather Accessories
-WL-SKU-039,WL-PROD-293,Brown_Size_42,Leather Accessories
+WL-SKU-039,WL-PROD-290,Brown_Size_42,Bags
+WL-SKU-039,WL-PROD-291,Brown_Size_42,Bags
+WL-SKU-039,WL-PROD-292,Brown_Size_42,Bags
+WL-SKU-039,WL-PROD-293,Brown_Size_42,Bags
 
-WL-SKU-040,WL-PROD-290,Black_Size_42,Leather Accessories
-WL-SKU-040,WL-PROD-291,Black_Size_42,Leather Accessories
-WL-SKU-040,WL-PROD-294,Black_Size_42,Leather Accessories
-WL-SKU-040,WL-PROD-295,Black_Size_42,Leather Accessories
+WL-SKU-040,WL-PROD-290,Black_Size_42,Bags
+WL-SKU-040,WL-PROD-291,Black_Size_42,Bags
+WL-SKU-040,WL-PROD-294,Black_Size_42,Bags
+WL-SKU-040,WL-PROD-295,Black_Size_42,Bags

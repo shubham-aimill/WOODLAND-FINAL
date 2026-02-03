@@ -346,11 +346,27 @@ def run_chatbot_query(question: str):
     result = execute_sql(db_path, sql)
 
     # ==================================================
-    # INSERT handling (order_log / raw_material_log)
+    # WRITE operations handling (INSERT / UPDATE / DELETE)
     # ==================================================
     if isinstance(result, int):
         rows_affected = result
 
+        # Detect operation type
+        sql_lower = sql.lower().strip()
+        if sql_lower.startswith("insert"):
+            operation = "INSERT"
+            action_verb = "inserted"
+        elif sql_lower.startswith("update"):
+            operation = "UPDATE"
+            action_verb = "updated"
+        elif sql_lower.startswith("delete"):
+            operation = "DELETE"
+            action_verb = "deleted"
+        else:
+            operation = "UNKNOWN"
+            action_verb = "modified"
+
+        # Detect target table
         table = (
             "raw_material_log"
             if "raw_material_log" in sql.lower()
@@ -397,7 +413,7 @@ def run_chatbot_query(question: str):
                     email_content = None
 
         # --------------------
-        # Persist correct CSV
+        # Persist correct CSV (for INSERT/UPDATE/DELETE)
         # --------------------
         try:
             persist_order_log(db_path, table)
@@ -425,8 +441,9 @@ def run_chatbot_query(question: str):
 
         return {
             "sql": sql,
-            "summary": f"✅ Successfully inserted {rows_affected} record(s) into {table}.",
+            "summary": f"✅ Successfully {action_verb} {rows_affected} record(s) in {table}.",
             "rows_affected": rows_affected,
+            "operation": operation,
             "email_subject": email_content["subject"] if email_content else None,
             "email_body": email_content["body"] if email_content else None,
             "data": [],

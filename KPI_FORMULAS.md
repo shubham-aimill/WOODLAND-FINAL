@@ -180,7 +180,7 @@ Baseline Sales = Σ(actual_sales_units) over the last N historical days
 
 - **Source**: `sku_daily_sales.csv`
 - **Historical window**:
-  - Let `FORECAST_CUTOFF_DATE` be the last historical date (e.g., 2025‑12‑30).
+  - Let `FORECAST_CUTOFF_DATE` be the last historical date (e.g., 2026‑02‑05).
   - Let `historical_days = forecast_days` (7 or 30, matched to forecast horizon).
   - Historical period:
     ```text

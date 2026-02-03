@@ -102,14 +102,14 @@
       }
     },
     "order_log": {
-      "description": "Historical actual sales data at SKU-store-day level. Insert-only table for recording sales transactions.",
+      "description": "Historical actual sales data at SKU-store-day level. Writable table for recording and managing sales transactions. Use this table (NOT sku_daily_sales) when the user asks to delete, update, or insert sales/orders.",
       "writable": true,
       "write_rules": {
-        "allowed_operations": ["INSERT"],
+        "allowed_operations": ["INSERT", "UPDATE", "DELETE"],
         "constraints": [
-          "Only INSERT is allowed",
-          "No UPDATE or DELETE",
-          "Append-only table"
+          "INSERT, UPDATE, and DELETE operations are allowed",
+          "Always use WHERE clause for UPDATE and DELETE operations",
+          "Be careful with DELETE to avoid removing all records"
         ]
       },
       "columns": {
@@ -291,9 +291,9 @@
       }
     },
     "raw_material_log": {
-      "description": "User-entered raw material inventory records. Writable table for inserting new inventory records.",
+      "description": "User-entered raw material inventory records. Writable table for managing inventory records.",
       "writable": true,
-      "allowed_operations": ["INSERT"],
+      "allowed_operations": ["INSERT", "UPDATE", "DELETE"],
       "columns": {
         "date": {
           "description": "Inventory record date.",

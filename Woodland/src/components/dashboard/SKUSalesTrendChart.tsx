@@ -115,7 +115,7 @@ export const SKUSalesTrendChart = () => {
     return { 
       chartData: formatted, 
       channels: chList,
-      cutoffDate: forecastCutoffDate || '2025-12-30'
+      cutoffDate: forecastCutoffDate || '2026-02-05'
     };
   }, [data, forecastCutoffDate]);
 

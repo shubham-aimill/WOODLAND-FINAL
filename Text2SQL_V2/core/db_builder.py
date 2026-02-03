@@ -96,12 +96,47 @@ def execute_sql(db_path, sql):
             conn.close()
             return rows_affected
 
+        # --------------------
+        # UPDATE (allowed tables)
+        # --------------------
+        if sql_clean.startswith("update"):
+            if (
+                "order_log" not in sql_clean
+                and "raw_material_log" not in sql_clean
+            ):
+                raise RuntimeError(
+                    "UPDATE is only allowed on order_log or raw_material_log tables"
+                )
+
+            cur.execute(sql)
+            conn.commit()
+            rows_affected = cur.rowcount
+            conn.close()
+            return rows_affected
+
+        # --------------------
+        # DELETE (allowed tables)
+        # --------------------
+        if sql_clean.startswith("delete"):
+            if (
+                "from order_log" not in sql_clean
+                and "from raw_material_log" not in sql_clean
+            ):
+                raise RuntimeError(
+                    "DELETE is only allowed on order_log or raw_material_log tables"
+                )
+
+            cur.execute(sql)
+            conn.commit()
+            rows_affected = cur.rowcount
+            conn.close()
+            return rows_affected
 
         # --------------------
         # BLOCK everything else
         # --------------------
         raise RuntimeError(
-            "Only SELECT queries and INSERT into order_log or raw_material_log are allowed"
+            "Only SELECT, INSERT, UPDATE, and DELETE on order_log or raw_material_log are allowed"
         )
 
 

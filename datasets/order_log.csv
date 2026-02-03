@@ -31,13 +31,14 @@ date,sku_id,store_id,sales_channel,actual_sales_units
 2024-01-15,WL-SKU-005,Store_02,Online,20.0
 2024-01-15,WL-SKU-009,Store_08,Online,20.0
 2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
+2026-01-20,WL-SKU-050,Store_05,E-Commerce,15.0
+2026-01-20,WL-SKU-050,Store_05,E-Commerce,15.0
+2026-01-20,WL-SKU-050,Store_05,E-Commerce,15.0
+2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
+2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
+2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
+2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
+2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
+2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
+2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
 2026-01-16,WL-SKU-002,Store_03,Offline Retail,30.0
-2026-01-20,WL-SKU-050,Store_05,E-Commerce,15.0
-2026-01-20,WL-SKU-050,Store_05,E-Commerce,15.0
-2026-01-20,WL-SKU-050,Store_05,E-Commerce,15.0
-2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
-2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
-2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
-2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
-2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0
-2026-01-15,WL-SKU-001,Store_01,E-Commerce,25.0

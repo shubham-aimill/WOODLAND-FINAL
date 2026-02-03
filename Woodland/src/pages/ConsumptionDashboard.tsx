@@ -53,7 +53,7 @@ const ConsumptionDashboard = () => {
           icon={<BarChart3 className="w-5 h-5" />}
           trend={trend(kpis?.consumptionForecastAccuracy)}
           status="success"
-          subtitle="Forecast vs baseline MAPE"
+          subtitle={`Next ${forecastDays}d forecast vs last ${forecastDays}d consumption (100 − MAPE)`}
           onClick={() => {}}
           isLoading={isLoading}
         />
@@ -70,12 +70,12 @@ const ConsumptionDashboard = () => {
           isLoading={isLoading}
         />
         <KPICard
-          key={`stockout-${filters.product}-${filters.rawMaterial}-${kpis?.daysToStockout?.value}`}
+          key={`stockout-${filters.product}-${filters.rawMaterial}-${kpis?.daysToStockout?.value ?? 999}`}
           title="Days to Stockout"
-          value={kpis?.daysToStockout?.value?.toLocaleString() ?? kpis?.inventoryShortfallUnits?.value?.toLocaleString() ?? "0"}
+          value={kpis?.daysToStockout?.value != null ? kpis.daysToStockout.value.toLocaleString() : "999"}
           unit="days"
           icon={<TrendingDown className="w-5 h-5" />}
-          trend={trend(kpis?.daysToStockout ?? kpis?.inventoryShortfallUnits)}
+          trend={trend(kpis?.daysToStockout)}
           status={(kpis?.daysToStockout?.value ?? 999) < 14 ? "error" : "success"}
           subtitle="Until first material runs out"
           onClick={() => {}}

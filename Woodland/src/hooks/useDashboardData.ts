@@ -234,8 +234,11 @@ import {
 const emptyConsumptionData: ConsumptionDashboardData = {
   kpis: {
     totalForecastedRMDemand: { value: 0, trend: 0, direction: "neutral" },
+    trailing30DConsumption: { value: 0, trend: 0, direction: "neutral" },
     actualRMConsumption: { value: 0, trend: 0, direction: "neutral" },
     consumptionForecastAccuracy: { value: 0, trend: 0, direction: "neutral" },
+    projectedOverstock: { value: 0, trend: 0, direction: "neutral" },
+    daysToStockout: { value: 999, trend: 0, direction: "neutral" },
     inventoryExcessUnits: { value: 0, trend: 0, direction: "neutral" },
     inventoryShortfallUnits: { value: 0, trend: 0, direction: "neutral" },
   },
@@ -251,7 +254,7 @@ const emptyConsumptionData: ConsumptionDashboardData = {
   },
   forecastComparison: [],
   consumptionErrorHeatmap: [],
-  forecastCutoffDate: "2025-12-30",
+  forecastCutoffDate: "2026-02-05",
   forecastHorizon: "30day"
 };
 
@@ -270,7 +273,7 @@ const emptySalesData: SalesDashboardData = {
     topDemandDrivers: [],
     rollingError: [],
     forecastDeviationHistogram: [],
-    forecastCutoffDate: "2025-12-30",
+    forecastCutoffDate: "2026-02-05",
     forecastHorizon: "30day"
 };
 

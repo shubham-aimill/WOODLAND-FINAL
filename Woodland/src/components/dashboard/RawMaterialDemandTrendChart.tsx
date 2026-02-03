@@ -79,7 +79,7 @@ export const RawMaterialDemandTrendChart = () => {
     }).sort((a: any, b: any) => a.date.localeCompare(b.date));
     
     // Find cutoff date display value
-    const cutoff = forecastCutoffDate || '2025-12-30';
+    const cutoff = forecastCutoffDate || '2026-02-05';
     const cutoffItem = formatted.find((d: any) => d.date === cutoff);
     
     return { 
