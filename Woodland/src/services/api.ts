@@ -265,7 +265,7 @@ export interface RawMaterialRiskRow {
 import { FilterState } from "@/contexts/FilterContext";
 
 // FORCE Localhost for Development
-const API_BASE_URL = "https://woodland-final-lxcg.onrender.com";
+const API_BASE_URL = "https://woodland-backend.onrender.com";
 
 const CONSUMPTION_API_URL = API_BASE_URL;
 const SALES_API_URL = API_BASE_URL;

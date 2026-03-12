@@ -191,7 +191,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
       // -----------------------------
       // 2. Call backend
       // -----------------------------
-      const res = await fetch("https://woodland-final-lxcg.onrender.com", {
+      const res = await fetch("https://woodland-backend.onrender.com", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: text }),
